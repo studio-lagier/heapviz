@@ -3153,6 +3153,14 @@ loader-utils@0.2.x, loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
+loader-utils@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
+  dependencies:
+    big.js "^3.1.3"
+    emojis-list "^2.0.0"
+    json5 "^0.5.0"
+
 lodash-es@^4.2.0, lodash-es@^4.2.1:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.4.tgz#dcc1d7552e150a0640073ba9cb31d70f032950e7"
@@ -4300,6 +4308,10 @@ redux-devtools@^3.4.0:
     prop-types "^15.5.7"
     redux-devtools-instrument "^1.0.1"
 
+redux-worker-middleware@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/redux-worker-middleware/-/redux-worker-middleware-1.0.0.tgz#2eca608aca65c7af3072abcd5a78021ac01d16ed"
+
 redux@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
@@ -5250,6 +5262,12 @@ worker-farm@^1.3.1:
   dependencies:
     errno ">=0.1.1 <0.2.0-0"
     xtend ">=4.0.0 <4.1.0-0"
+
+worker-loader@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/worker-loader/-/worker-loader-0.8.0.tgz#13582960dcd7d700dc829d3fd252a7561696167e"
+  dependencies:
+    loader-utils "^1.0.2"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"

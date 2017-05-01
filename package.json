@@ -7,7 +7,8 @@
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
-    "redux-devtools": "^3.4.0"
+    "redux-devtools": "^3.4.0",
+    "redux-worker-middleware": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",
@@ -47,7 +48,8 @@
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
-    "whatwg-fetch": "2.0.2"
+    "whatwg-fetch": "2.0.2",
+    "worker-loader": "^0.8.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
