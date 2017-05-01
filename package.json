@@ -4,7 +4,10 @@
   "private": true,
   "dependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0",
+    "redux-devtools": "^3.4.0"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",
