@@ -3,6 +3,7 @@
 # editor files
 .history
 .vscodeignore
+.vscode
 
 # dependencies
 /node_modules
