@@ -1,8 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
+import { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+export interface AppProps { }
+
+export class App extends Component<AppProps, undefined> {
   render() {
     return (
       <div className="App">
@@ -12,6 +15,7 @@ class App extends Component {
         </div>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
+          This is a new thing.
         </p>
       </div>
     );

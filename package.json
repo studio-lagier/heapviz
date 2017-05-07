@@ -3,15 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/d3": "^4.8.0",
+    "@types/lodash": "^4.14.64",
+    "@types/react": "^15.0.23",
+    "@types/react-dom": "^15.5.0",
+    "@types/react-redux": "^4.4.40",
+    "@types/redux": "^3.6.0",
+    "@types/redux-actions": "^1.2.4",
+    "@types/rx": "^4.1.1",
+    "d3": "^4.8.0",
+    "lodash": "^4.17.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
+    "redux-actions": "^2.0.2",
     "redux-devtools": "^3.4.0",
-    "redux-worker-middleware": "^1.0.0"
+    "redux-worker-middleware": "^1.0.0",
+    "rx": "^4.1.0"
   },
   "devDependencies": {
+    "@types/jest": "^19.2.2",
     "autoprefixer": "6.7.2",
+    "awesome-typescript-loader": "^3.1.3",
     "babel-core": "6.22.1",
     "babel-eslint": "7.1.1",
     "babel-jest": "18.0.0",
@@ -43,7 +57,10 @@
     "postcss-loader": "1.2.2",
     "promise": "7.1.1",
     "react-dev-utils": "^0.5.2",
+    "source-map-loader": "^0.2.1",
     "style-loader": "0.13.1",
+    "ts-jest": "^19.0.14",
+    "typescript": "^2.3.2",
     "url-loader": "0.5.7",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
@@ -58,7 +75,7 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "src/**/*.{js,jsx,ts,tsx}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js"
@@ -70,8 +87,9 @@
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
