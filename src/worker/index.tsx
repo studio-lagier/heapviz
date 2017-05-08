@@ -5,15 +5,15 @@ import { Node, Dispatcher, HeapProfile } from './heap-profile-parser';
 import { hierarchy, pack } from 'd3';
 
 const dispatcher = new Dispatcher(self, self.postMessage.bind(self));
-let heapProfile;
+let heapProfile: HeapProfile;
 
 
-function serializeResponse(nodes) {
+function serializeResponse(nodes: Array<Node>) {
     const te = new TextEncoder();
     return te.encode(JSON.stringify(nodes)).buffer;
 }
 
-function transferNodes(nodes) {
+function transferNodes(nodes: Array<any>) {
 
     const ab = serializeResponse(nodes);
 
@@ -22,7 +22,7 @@ function transferNodes(nodes) {
     return Promise.resolve();
 }
 
-
+// TODO: rewrite this to use rxjs instead
 const MAX_NODES = 1000000;
 self.onmessage = e => {
     const {data:d} = e;
@@ -50,7 +50,7 @@ self.onmessage = e => {
                 return;
             }
 
-            const root = hierarchy({children})
+            const root = hierarchy({retainedSize: 0, children})
                 .sum(node => node.retainedSize);
 
             const layout = pack()

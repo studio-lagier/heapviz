@@ -9,7 +9,8 @@ export class Node {
     selfSize: number;
     retainedSize: number;
     edgesCount: number;
-    [key: string]: (string|number);
+    edges: Array<any>;
+    [key: string]: any;
 
     constructor(rawNode: any) {
         ['id', 'distance', 'className', 'itemIndex', 'retainersCount', 'name', 'type', 'selfSize', 'retainedSize', 'edgesCount']

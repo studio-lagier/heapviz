@@ -1,18 +1,37 @@
+import * as _ from 'lodash';
 import { Dispatcher, Node } from './index';
 import { WebInspector } from '../web-inspector';
 
 interface RawNode {
-    [key: string]: any;
+    [key: string]: any
+}
+
+interface RawSample {
+    [key: string]: any
 }
 
 interface Heap {
     nodes: Array<Node>
 }
 
+interface NodeFilter {
+    minNodeId: number
+    maxNodeId: number
+}
+
+interface Filters {
+    type: string
+    num: {
+        [key: string]: number
+    }
+}
+
 export class HeapProfile {
-    snapshot: any;
-    _node: RawNode;
+    _node: RawNode
+    _filter: NodeFilter
+    snapshot: any
     nodes: Array<Node>
+    samples: Array<Array<Node>>
 
     constructor(heap: Heap, dispatcher: Dispatcher) {
         //HeapSnapshotProgress accepts a dispatcher with sendEvent method that can receive messages and errors
@@ -38,7 +57,7 @@ export class HeapProfile {
         }, []);
     }
 
-    createNode(index: number) {
+    createNode(index: number): Node {
         this._node.nodeIndex = index;
         return new Node(this._node);
     }
@@ -59,7 +78,7 @@ export class HeapProfile {
 
     //Associate a range of nodes with a particular sample to allow for easy segmentation
     createSamples() {
-        this.samples = this.snapshot._samples.timestamps.reduce((all, timestamp, idx, timestamps) => {
+        this.samples = this.snapshot._samples.timestamps.reduce((all: Array<any>, timestamp: number, idx: number, timestamps: Array<number>) => {
             if (idx > 0) {
                 all.push(this.getSample(timestamps[idx - 1] || 0, timestamps[idx]));
             }
@@ -69,12 +88,12 @@ export class HeapProfile {
         return this.samples;
     }
 
-    getSample(startTime, endTime) {
+    getSample(startTime: number, endTime: number) {
         //Return a tree made of nodes that exist between startTime and endTime
         //Assumes find iterates in order
         const samples = this.snapshot._samples;
-        const startIdx = samples.timestamps.findIndex(timestamp => timestamp >= startTime);
-        const endIdx = samples.timestamps.findIndex(timestamp => timestamp > endTime) - 1;
+        const startIdx = samples.timestamps.findIndex((timestamp: number) => timestamp >= startTime);
+        const endIdx = samples.timestamps.findIndex((timestamp: number) => timestamp > endTime) - 1;
 
         //Special case startTime 0 to return all initially assigned ids
         const startId = startTime === 0 ? 0 : samples.lastAssignedIds[startIdx];
@@ -84,7 +103,7 @@ export class HeapProfile {
         return this.nodes.filter(this.inSample.bind(this));
     }
 
-    inSample(node) {
+    inSample(node: Node) {
         return _.inRange(node.id, this._filter.minNodeId, this._filter.maxNodeId + 1);
     }
 
@@ -93,7 +112,7 @@ export class HeapProfile {
         return ids[ids.length - 1];
     }
 
-    fetchNode(nodeIdx) {
+    fetchNode(nodeIdx: number) {
         const node = this.createNode(nodeIdx);
         node.edges = this.createEdges(node);
         return node;
@@ -111,7 +130,7 @@ export class HeapProfile {
         };
     }
 
-    applyFilters({filters, idx}) {
+    applyFilters({filters, idx}: {filters: Filters, idx: number}) {
         return this.samples[idx].filter(
             node => {
                 if (node.type === 'synthetic') {

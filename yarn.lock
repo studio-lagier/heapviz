@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/core-js@^0.9.41":
+  version "0.9.41"
+  resolved "https://registry.yarnpkg.com/@types/core-js/-/core-js-0.9.41.tgz#cfeceb63c2beaa29f882252c7c18e0e9471ff4e2"
+
 "@types/d3-array@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-1.2.0.tgz#9b1fc3202fc1a9f7da0f2873bd38b443137a9d34"
@@ -302,6 +306,10 @@
     "@types/rx-lite-testing" "*"
     "@types/rx-lite-time" "*"
     "@types/rx-lite-virtualtime" "*"
+
+"@types/text-encoding@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@types/text-encoding/-/text-encoding-0.0.30.tgz#2ad7bc19287094c9d2754d238e0994dd2995781f"
 
 abab@^1.0.3:
   version "1.0.3"

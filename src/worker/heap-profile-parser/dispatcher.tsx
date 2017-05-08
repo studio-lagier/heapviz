@@ -13,7 +13,7 @@ export class Dispatcher {
      * @param {string} name
      * @param {*} data
      */
-    sendEvent(eventName: string, data: any, transferrables: Array<any>) {
+    sendEvent(eventName: string, data?: any, transferrables?: Array<any>) {
         this._postMessage({ eventName, data }, transferrables);
     }
 };
