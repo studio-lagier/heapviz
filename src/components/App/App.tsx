@@ -4,7 +4,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import * as MyWorker from "worker-loader!../../worker";
-const worker = new MyWorker();
+const worker: Worker = new MyWorker();
 
 export interface AppProps { }
 
