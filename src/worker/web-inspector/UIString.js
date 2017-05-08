@@ -1,4 +1,3 @@
-/* jshint worker: true */
 /*
  * Copyright (C) 2011 Google Inc.  All rights reserved.
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
@@ -29,6 +28,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import { WebInspector } from './index';
+
 /**
  * @param {string} string
  * @param {...*} vararg

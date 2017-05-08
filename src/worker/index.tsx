@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import '../vsprintf';
+import './lib/vsprintf';
 import { WebInspector } from './web-inspector';
 import { Node, Dispatcher, HeapProfile } from './heap-profile-parser';
 import { hierarchy, pack } from 'd3';
@@ -71,3 +71,5 @@ self.onmessage = e => {
 
     }
 };
+
+export default self;

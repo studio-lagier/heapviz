@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/core-js": "^0.9.41",
     "@types/d3": "^4.8.0",
     "@types/lodash": "^4.14.64",
     "@types/react": "^15.0.23",
@@ -11,7 +10,6 @@
     "@types/react-redux": "^4.4.40",
     "@types/redux": "^3.6.0",
     "@types/redux-actions": "^1.2.4",
-    "@types/rx": "^4.1.1",
     "@types/text-encoding": "^0.0.30",
     "d3": "^4.8.0",
     "lodash": "^4.17.4",

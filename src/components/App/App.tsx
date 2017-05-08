@@ -3,6 +3,9 @@ import { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import * as MyWorker from "worker-loader!../../worker";
+const worker = new MyWorker();
+
 export interface AppProps { }
 
 export class App extends Component<AppProps, undefined> {
