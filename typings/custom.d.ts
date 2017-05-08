@@ -3,7 +3,7 @@ declare module "*.svg" {
   export default content;
 }
 
-declare module "worker-loader!../../worker" {
+declare module "worker-loader!*" {
   const content: any;
   export = content;
 }
