@@ -6,6 +6,8 @@ import './App.css';
 import * as MyWorker from "worker-loader!../../worker";
 const worker: Worker = new MyWorker();
 
+(window as any).myWorker = worker;
+
 export interface AppProps { }
 
 export class App extends Component<AppProps, undefined> {

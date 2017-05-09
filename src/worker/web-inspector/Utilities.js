@@ -37,7 +37,6 @@ console.assert = function(value, message) {
 };
 
 /** @typedef {Array|NodeList|Arguments|{length: number}} */
-var ArrayLike;
 
 /**
  * @param {number} m
@@ -1369,10 +1368,10 @@ function suppressUnused(value) {
  * @param {function()} callback
  * @return {number}
  */
-self.setImmediate = function(callback) {
-  Promise.resolve().then(callback);
-  return 0;
-};
+// self.setImmediate = function(callback) {
+//   Promise.resolve().then(callback);
+//   return 0;
+// };
 
 /**
  * @param {function(...?)} callback

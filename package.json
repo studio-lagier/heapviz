@@ -20,7 +20,7 @@
     "redux-actions": "^2.0.2",
     "redux-devtools": "^3.4.0",
     "redux-worker-middleware": "^1.0.0",
-    "rx": "^4.1.0"
+    "rxjs": "^5.3.1"
   },
   "devDependencies": {
     "@types/jest": "^19.2.2",
