@@ -1,3 +1,5 @@
+import { FluxStandardAction } from '../../../typings/fsa';
+
 export class Dispatcher {
     _objects: Array<any>;
     _global: Window;
@@ -14,6 +16,10 @@ export class Dispatcher {
      * @param {*} data
      */
     sendEvent(eventName: string, data?: any, transferrables?: Array<any>) {
-        this._postMessage({ eventName, data }, transferrables);
+
+        this._postMessage({
+            type: eventName,
+            payload: data
+        }, transferrables);
     }
 };
