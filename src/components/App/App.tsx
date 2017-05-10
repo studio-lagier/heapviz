@@ -2,11 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-
-import * as MyWorker from "worker-loader!../../worker";
-const worker: Worker = new MyWorker();
-
-(window as any).myWorker = worker;
+import store from '../../store';
 
 export interface AppProps { }
 
