@@ -33,7 +33,7 @@ export interface ErrorFluxStandardAction<CustomError extends Error, Meta> extend
 /**
  * Alias for FluxStandardAction.
  */
-export type FSA<Payload, Meta> = FluxStandardAction<Payload, Meta>;
+export interface FSA extends FluxStandardAction<any, any> { }
 
 /**
  * Alias for ErrorFluxStandardAction.

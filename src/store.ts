@@ -1,14 +1,21 @@
-import reducers from './reducers';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
-import * as HeapWorker from "worker-loader!./worker";
-import createWorkerMiddleware from 'redux-worker-middleware';
+import { combineEpics, createEpicMiddleware } from 'redux-observable';
 
-const worker: Worker = new HeapWorker();
+//Reducers
+import heap, {fetchNode, transferProfile, applyFilters} from './services/heap/state';
+const rootReducer = combineReducers({
+    heap
+})
+
+//Epics
+const rootEpic = combineEpics(
+    fetchNode, transferProfile, applyFilters
+)
 
 export default createStore(
-    combineReducers(reducers),
+    rootReducer,
     //, preloadedState
     applyMiddleware(
-        createWorkerMiddleware(worker)
+        createEpicMiddleware(rootEpic)
     )
 );

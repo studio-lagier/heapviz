@@ -5267,9 +5267,9 @@ redux-devtools@^3.4.0:
     prop-types "^15.5.7"
     redux-devtools-instrument "^1.0.1"
 
-redux-worker-middleware@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/redux-worker-middleware/-/redux-worker-middleware-1.0.0.tgz#2eca608aca65c7af3072abcd5a78021ac01d16ed"
+redux-observable@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-0.14.1.tgz#9f3d870c69388fdc427ded6770a3e326f3b69693"
 
 redux@^3.6.0:
   version "3.6.0"
