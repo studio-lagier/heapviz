@@ -14,9 +14,9 @@ import {
     TRANSFER_PROFILE,
     APPLY_FILTERS,
     FETCH_NODE
-} from '../heap/state';
+} from './messages';
 
-//Returns FSA actions for consumable through epics
+//Returns FSA actions for cosnu
 import { FluxStandardAction } from '../../../typings/fsa';
 
 const { fromEvent } = Observable;

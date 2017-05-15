@@ -1,4 +1,4 @@
-import { FluxStandardAction } from '../../../typings/fsa';
+import { FluxStandardAction } from '../../../../typings/fsa';
 
 export class Dispatcher {
     _objects: Array<any>;
