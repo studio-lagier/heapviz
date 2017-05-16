@@ -1,0 +1,22 @@
+.file-upload-window {
+    padding: 25px;
+    display: flex;
+    height: calc(100vh - 100px);
+    position: relative;
+
+    &:before {
+        content: '';
+        width: calc(100% - 50px);
+        height: calc(100% - 50px);
+        border: 2px dashed grey;
+        position: absolute;
+    }
+}
+
+.instruction-text {
+    text-align: center;
+    width: calc(100% - 50px);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
