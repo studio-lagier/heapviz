@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import './FileUploadWindow.pcss';
 import { RouteComponentProps } from 'react-router';
 import { FSA } from '../../../typings/fsa';
+import { actions } from '../../services/file/state';
+const { file: { fetchLocalFile } } = actions;
 
 interface FileUploadWindowProps {
   onClick: (size: string) => FSA
@@ -25,7 +27,7 @@ export const FileUploadWindow = ({ onClick }: FileUploadWindowProps) => (
         Choose a pre-generated heap profile below
       </div>
       <div>
-        <a onClick={() => onClick('small')}>(small)</a> |
+        <div onClick={() => onClick('small')}>(small)</div> |
         <a>(medium)</a> |
         <a>(large)</a>
       </div>
@@ -36,6 +38,7 @@ export const FileUploadWindow = ({ onClick }: FileUploadWindowProps) => (
 function loadStaticFile(size: string) {
   switch (size) {
     case 'small':
+      return fetchLocalFile('Heap-20161109T212710.heaptimeline');
     case 'medium':
     case 'large':
   }

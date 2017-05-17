@@ -32,7 +32,6 @@ export default function reducer(state = {}, action: FSA) {
 };
 
 //Action creators
-
 export const actions = createActions({
     heap: {
         APPLY_FILTERS: (p: { filters: any, idx: number, width: number }) => p,
