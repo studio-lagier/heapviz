@@ -19,7 +19,7 @@ interface NodeFilter {
     maxNodeId: number
 }
 
-interface Filters {
+export interface Filters {
     type: string
     num: {
         [key: string]: number

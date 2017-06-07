@@ -1,5 +1,9 @@
 import { FluxStandardAction } from '../../../../typings/fsa';
 
+function toActionName(name: string): string {
+    return `heap/${name.split(/(?=[A-Z])/).map((s: string) => s.toUpperCase()).join('_')}`;
+}
+
 export class Dispatcher {
     _objects: Array<any>;
     _global: Window;
@@ -18,7 +22,8 @@ export class Dispatcher {
     sendEvent(eventName: string, data?: any, transferrables?: Array<any>) {
 
         this._postMessage({
-            type: eventName,
+            //Handle both chrome and our standard actions
+            type: eventName.indexOf('/') === -1 ? toActionName(eventName) : eventName,
             payload: data
         }, transferrables);
     }

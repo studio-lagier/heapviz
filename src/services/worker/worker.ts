@@ -1,9 +1,13 @@
 import * as _ from 'lodash';
-import './lib/vsprintf';
+import { vsprintf } from './lib/vsprintf';
+(<any>self).vsprintf = vsprintf;
+
 import { WebInspector } from './web-inspector';
-import { Node, Dispatcher, HeapProfile } from './heap-profile-parser';
-import { hierarchy, pack } from 'd3';
+import { Node, WireNode, Dispatcher, HeapProfile, Filters } from './heap-profile-parser';
 import { Observable } from 'rxjs';
+
+importScripts('/pack-circles/index.js');
+declare var Module: any;
 
 import {
     SEND_NODES,
@@ -24,15 +28,24 @@ const dispatcher = new Dispatcher(self, self.postMessage.bind(self));
 let heapProfile: HeapProfile;
 const MAX_NODES = 1000000;
 
-function serializeResponse(nodes: Array<Node>) {
+function serializeResponse(nodes: Array<WireNode>) {
     const te = new TextEncoder();
     return te.encode(JSON.stringify(nodes)).buffer;
 }
 
-function transferNodes(nodes: Array<any>) {
-    const ab = serializeResponse(nodes);
+function transferNodes(children: Array<Node>, nodes: any) {
+    let node:WireNode;
+    const wireNodes:WireNode[] = [];
+    for (var i = 0; i < nodes.size(); i++) {
+        node = children[i].toMed();
+        node.x = nodes.get(i).x;
+        node.y = nodes.get(i).y;
+        node.r = nodes.get(i).r;
+        wireNodes.push(node);
+    }
+
+    const ab = serializeResponse(wireNodes);
     dispatcher.sendEvent(SEND_NODES, ab, [ab]);
-    return Promise.resolve();
 }
 
 function fromHeap(heap: ArrayBufferView) {
@@ -42,7 +55,11 @@ function fromHeap(heap: ArrayBufferView) {
     return profile;
 }
 
-function receiveProfile({ heap }: { heap: ArrayBufferView }) {
+interface ProfilePayload {
+    heap: ArrayBufferView;
+    width: number;
+}
+function receiveProfile({ heap, width }: ProfilePayload) {
     dispatcher.sendEvent(PROGRESS_UPDATE, 'Generating samples...');
     heapProfile = fromHeap(heap);
     dispatcher.sendEvent(PROGRESS_UPDATE, 'Generating statistics...');
@@ -53,36 +70,52 @@ function receiveProfile({ heap }: { heap: ArrayBufferView }) {
         stats,
         nodeTypes: heapProfile.snapshot._nodeTypes
     });
+
+    const children = getNodes({
+        type: 'all',
+        num: { retainedSize: 200 }
+    }, 0);
+    if (!children) return;
+
+    dispatcher.sendEvent(PROGRESS_UPDATE, 'Calculating layout. If this is taking a long time, please increase the filter');
+    const nodes = generateLayout(children, width);
+
+    transferNodes(children, nodes);
+    dispatcher.sendEvent(TRANSFER_COMPLETE);
+}
+
+function getNodes(filters: Filters, idx: number) {
+    const nodes = heapProfile.applyFilters({ filters, idx });
+    if (nodes.length > MAX_NODES) {
+        dispatcher.sendEvent(PROGRESS_UPDATE, `Current filter contains ${nodes.length} nodes, max nodes is ${MAX_NODES}. Please increase filter to reduce number of visible nodes`);
+        return;
+    }
+
+    return nodes;
 }
 
 function generateLayout(children: Node[], width: number) {
-    const root = hierarchy({ retainedSize: 0, children })
-        .sum(node => node.retainedSize);
+    let root;
 
-    const layout = pack()
-        .size([width, width])
-        .padding(1.5);
+    root = new Module.Hierarchy({
+        size: [width, width],
+        padding: 1.5
+    }, { value: 0, children: children.map(node => node.toSmall())});
 
-    const nodes = layout(root).leaves()
-    nodes.forEach(node => delete node.parent);
-    return nodes;
+    return root.pack().leaves();
 }
 
 function applyFilters(
     { filters, idx, width }:
-        { filters: any, idx: number, width: number }
+        { filters: Filters, idx: number, width: number }
 ) {
     //Send samples across in chunks here
-    const children = heapProfile.applyFilters({filters, idx});
-    if (children.length > MAX_NODES) {
-        dispatcher.sendEvent(PROGRESS_UPDATE, `Current filter contains ${children.length} nodes, max nodes is ${MAX_NODES}. Please increase filter to reduce number of visible nodes`);
-        return;
-    }
+    const children = getNodes(filters, idx);
 
     const nodes = generateLayout(children, width);
 
-    transferNodes(nodes)
-        .then(() => dispatcher.sendEvent(TRANSFER_COMPLETE));
+    transferNodes(children, nodes);
+    dispatcher.sendEvent(TRANSFER_COMPLETE);
 }
 
 function fetchNode({ idx }: {idx: number}) {

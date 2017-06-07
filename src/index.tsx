@@ -7,7 +7,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, push } from 'react-router-redux';
 import { Header } from './components/Header';
 import FileUploadWindow from './components/FileUploadWindow';
-import { App } from './components/App';
+import App from './components/App';
 
 
 ReactDOM.render(

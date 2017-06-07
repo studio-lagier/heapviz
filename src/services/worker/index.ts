@@ -7,4 +7,7 @@ import { ActionsObservable } from 'redux-observable';
 const { fromEvent } = Observable;
 
 export default worker;
-export const workerMessages$: ActionsObservable<FSA> = ActionsObservable.from(fromEvent(worker, 'message'));
+export const workerMessages$: ActionsObservable<FSA> = ActionsObservable.from(
+    fromEvent(worker, 'message')
+        .map(({ data }) => data)
+);

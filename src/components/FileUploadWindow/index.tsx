@@ -8,10 +8,11 @@ import { actions } from '../../services/file/state';
 const { file: { fetchLocalFile } } = actions;
 
 interface FileUploadWindowProps {
-  onClick: (size: string) => FSA
+  onClick: (size: string) => FSA;
+  fetching: boolean;
 }
 
-export const FileUploadWindow = ({ onClick }: FileUploadWindowProps) => (
+export const FileUploadWindow = ({ onClick, fetching }: FileUploadWindowProps) => (
   <div className="file-upload-window">
     <div className="instruction-text">
       <div>
@@ -26,10 +27,11 @@ export const FileUploadWindow = ({ onClick }: FileUploadWindowProps) => (
       <div>
         Choose a pre-generated heap profile below
       </div>
+      { fetching ? "Fetching!" : "Not fetching... "}
       <div>
-        <div onClick={() => onClick('small')}>(small)</div> |
-        <a>(medium)</a> |
-        <a>(large)</a>
+        <a onClick={() => onClick('small')}>(small)</a> |
+        <a onClick={() => onClick('medium')}>(medium)</a> |
+        <a onClick={() => onClick('large')}>(large)</a>
       </div>
     </div>
   </div>
@@ -40,12 +42,14 @@ function loadStaticFile(size: string) {
     case 'small':
       return fetchLocalFile('Heap-20161109T212710.heaptimeline');
     case 'medium':
+      return fetchLocalFile('Heap-20161110T224559.heaptimeline');
     case 'large':
+      return fetchLocalFile('Heap-20170129T011211.heaptimeline');
   }
 }
 
 export default connect(
-  state => state,
+  ({ file: { fetching } }) => { return { fetching } },
   dispatch => {
     return {
       onClick: size => {

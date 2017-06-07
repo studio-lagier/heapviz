@@ -9,8 +9,6 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 
-
-
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 var publicPath = '/';
@@ -128,6 +126,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: 'babel',
+        exclude: [/pack-circles/],
         query: {
 
           // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -139,6 +138,7 @@ module.exports = {
       {
         test: /\.(ts|tsx)(\?.*)?$/,
         include: paths.appSrc,
+        exclude: [/pack-circles/],
         loader: 'awesome-typescript-loader',
       },
       {

@@ -3,11 +3,13 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Observable } from 'rxjs';
-const { fromPromise } = Observable;
-
+import { push } from 'react-router-redux';
+import { actions as heapActions } from '../heap/state';
+const { fromPromise, concat, of } = Observable;
+const { heap: { transferProfile } } = heapActions;
 //Actions
 export const FETCH_LOCAL_FILE = 'file/FETCH_LOCAL_FILE';
-export const LOCAL_FILE_FETCHED = 'file/LOCAL_FILE_FETCHED';
+export const FILE_LOADED = 'file/FILE_LOADED';
 
 //Reducer
 interface FileState {
@@ -30,7 +32,7 @@ export default function reducer(state = initialState, action: FSA) {
                 fetching: true,
                 fileName: action.payload
             };
-        case LOCAL_FILE_FETCHED:
+        case FILE_LOADED:
             return {
                 ...state,
                 fetching: false,
@@ -46,17 +48,29 @@ export default function reducer(state = initialState, action: FSA) {
 export const actions = createActions({
     file: {
         FETCH_LOCAL_FILE: (p: string) => p,
-        LOCAL_FILE_FETCHED: (p: ArrayBuffer) => p
+        FILE_LOADED: (p: ArrayBuffer) => p
     }
 })
 
 //Epics
-const { file: { localFileFetched } } = actions;
+const { file: { fileLoaded } } = actions;
 export const loadFile: Epic<FSA, any> =
     action$ => action$
         .ofType(FETCH_LOCAL_FILE)
-        .mergeMap(({ payload }) => {
-            return fromPromise(fetch(`/profiles/${payload}`)
-                .then(result => result.arrayBuffer())
-                .then(buff => localFileFetched(buff)))
-        })
+        .mergeMap(({ payload }) => fromPromise(
+            fetch(`/profiles/${payload}`)
+                .then(result => result.arrayBuffer()))
+        )
+        .mergeMap(buff => concat(
+                of(push('/viz')),
+                of(fileLoaded(buff)),
+                of(transferProfile({
+                    heap: buff,
+                    width: getWidth()
+                }))
+            )
+        )
+
+function getWidth(): number {
+    return Math.min(window.innerWidth, window.innerHeight);
+}

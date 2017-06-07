@@ -3,16 +3,28 @@ import { Component } from 'react';
 import logo from './logo.svg';
 import './App.pcss';
 import store from '../../store';
-import FileUploadWindow from '../FileUploadWindow';
+import { connect } from 'react-redux';
 
-export class App extends Component<any, any> {
-  render() {
-    return (
-      <div className="App">
-        <FileUploadWindow />
-      </div>
-    );
-  }
+interface AppProps {
+  message: string;
+  computing: boolean;
+  stats: any;
 }
 
-export default App;
+export const App = ({message, computing, stats}: AppProps) => (
+    <div className="App">
+      Visualization goes here
+      <div className="computing">
+        { computing ? "Computing!" : "Not computing... "}
+      </div>
+      <div className="message">
+        {message}
+      </div>
+    </div>
+);
+
+export default connect(
+  ({ heap: { message, computing, stats } }) => {
+    return { message, computing, stats }
+  }
+)(App);
