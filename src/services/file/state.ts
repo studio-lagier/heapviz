@@ -7,6 +7,7 @@ import { push } from 'react-router-redux';
 import { actions as heapActions } from '../heap/state';
 const { fromPromise, concat, of } = Observable;
 const { heap: { transferProfile } } = heapActions;
+
 //Actions
 export const FETCH_LOCAL_FILE = 'file/FETCH_LOCAL_FILE';
 export const FILE_LOADED = 'file/FILE_LOADED';
@@ -71,6 +72,7 @@ export const loadFile: Epic<FSA, any> =
             )
         )
 
+//TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
 function getWidth(): number {
     return Math.min(window.innerWidth, window.innerHeight);
 }

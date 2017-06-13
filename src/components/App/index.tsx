@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import './App.pcss';
 import store from '../../store';
 import { connect } from 'react-redux';
+import Renderer from '../Renderer';
 
 interface AppProps {
   message: string;
@@ -20,6 +21,7 @@ export const App = ({message, computing, stats}: AppProps) => (
       <div className="message">
         {message}
       </div>
+      <Renderer/>
     </div>
 );
 

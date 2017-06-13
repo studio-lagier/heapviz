@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/d3-scale": "^1.0.10",
     "@types/history": "^4.5.1",
     "@types/lodash": "^4.14.64",
+    "@types/pixi.js": "^4.5.0",
     "@types/react": "^15.0.23",
     "@types/react-dom": "^15.5.0",
     "@types/react-redux": "^4.4.40",
@@ -13,10 +15,12 @@
     "@types/react-router-redux": "^5.0.1",
     "@types/redux": "^3.6.0",
     "@types/text-encoding": "^0.0.30",
+    "d3-scale": "^1.0.6",
     "fetch": "^1.1.0",
     "history": "^4.6.1",
     "lodash": "^4.17.4",
     "materialize-css": "^0.98.2",
+    "pixi.js": "^4.5.3",
     "postcss-cssnext": "^2.11.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
@@ -27,8 +31,7 @@
     "redux": "^3.6.0",
     "redux-actions": "^2.0.2",
     "redux-observable": "^0.14.1",
-    "rxjs": "^5.3.1",
-    "script-loader": "^0.7.0"
+    "rxjs": "^5.3.1"
   },
   "devDependencies": {
     "@types/jest": "^19.2.2",

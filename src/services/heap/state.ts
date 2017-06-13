@@ -2,6 +2,7 @@ import { createActions } from 'redux-actions';
 import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
+import { Node } from '../worker/heap-profile-parser';
 
 //Actions
 import {
@@ -18,8 +19,8 @@ import {
 //Reducer
 export default function reducer(state = {
     message: 'Idle'
-}, action: FSA) {
-    switch (action.type) {
+}, {type, payload}: FSA) {
+    switch (type) {
         case APPLY_FILTERS:
             return state;
         case FETCH_NODE:
@@ -38,12 +39,12 @@ export default function reducer(state = {
         case PROGRESS_UPDATE:
             return {
                 ...state,
-                message: action.payload,
+                message: payload,
             }
         case NODE_FETCHED:
             return state;
         case PROFILE_LOADED:
-            const { stats, nodeTypes } = action.payload;
+            const { stats, nodeTypes } = payload;
             return {
                 ...state,
                 message: 'Profile has loaded',
@@ -53,7 +54,8 @@ export default function reducer(state = {
             return {
                 ...state,
                 message: 'Transfer complete!',
-                computing: false
+                computing: false,
+                nodes: payload
             }
         default:
             return state;
@@ -66,7 +68,7 @@ export const actions = createActions({
         APPLY_FILTERS: (p: { filters: any, idx: number, width: number }) => p,
         FETCH_NODE: (p: { idx: number }) => p,
         TRANSFER_PROFILE: (p: { heap: ArrayBufferView }) => p,
-        TRANSFER_COMPLETE: () => { }
+        TRANSFER_COMPLETE: (p: Node[]) => p
     }
 })
 
@@ -97,3 +99,14 @@ export const transferProfile: Epic<FSA, any> =
             return workerMessages$
                 .takeUntil(workerMessages$.ofType(TRANSFER_COMPLETE));
         });
+
+const { heap: { transferComplete } } = actions;
+export const decodeNodes: Epic<FSA, any> =
+    action$ => action$
+        .ofType(SEND_NODES)
+        .map(({ payload: nodes }: FSA) => {
+            const decoder = new TextDecoder();
+            const heap: Node[] = JSON.parse(decoder.decode(nodes));
+            return transferComplete(heap);
+        });
+
