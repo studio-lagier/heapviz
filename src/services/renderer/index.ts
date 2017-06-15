@@ -4,25 +4,35 @@ import { FSA } from '../../../typings/fsa';
 import { actions } from './state';
 import { Node } from '../worker/heap-profile-parser';
 import NodeCircle from './node-circle';
-import { generateTextures, texture } from './textures';
+// import { generateTextures, texture } from './textures';
+import { init, update, dispose } from './circle';
 
-const stage = new PIXI.Container();
-(<any>window).stage = stage;
+// const stage = new PIXI.Container();
+// (<any>window).stage = stage;
+let circles:any = [];
 
-export function createRenderer(width: number, height: number, o = {}) {
-    const options = Object.assign({
-        resolution: 2,
-        transparent: true,
-        antialias: true
-    }, o);
-
-    const newRenderer = PIXI.autoDetectRenderer(width, height, options);
-    newRenderer.render(stage);
-    return newRenderer;
+export function destroyRenderer() {
+    dispose();
+    circles = [];
 }
 
-const renderer = createRenderer(1024, 1024);
-(<any>window).renderer = renderer;
+export function createRenderer(canvas: HTMLCanvasElement) {
+    if (canvas) {
+        init(canvas, [255, 255, 255]);
+    }
+    // const options = Object.assign({
+    //     resolution: 2,
+    //     transparent: true,
+    //     antialias: true
+    // }, o);
+
+    // const newRenderer = PIXI.autoDetectRenderer(width, height, options);
+    // newRenderer.render(stage);
+    // return newRenderer;
+}
+
+// const renderer = createRenderer(1024, 1024);
+// (<any>window).renderer = renderer;
 
 function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
     let currentNode = start;
@@ -30,12 +40,12 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
     const startTime = Date.now();
     while (currentNode < nodes.length && timeDiff < 10) {
         const node = nodes[currentNode];
-        const circle = new NodeCircle({ node, texture: texture(node.t) });
+        const circle = new NodeCircle(node);
 
-        stage.addChild(circle.retainedSize);
+        circles.push(circle.retainedSize);
 
         if (circle.selfSize) {
-            stage.addChild(circle.selfSize);
+            circles.push(circle.selfSize);
         }
 
         currentNode++;
@@ -46,7 +56,7 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
         sub.next(currentNode);
         requestAnimationFrame(_drawNodes.bind(null, currentNode, nodes, sub));
     } else {
-        renderer.render(stage);
+        update(circles);
         sub.complete();
     }
 }
@@ -59,7 +69,7 @@ export function drawNodes(nodes: Node[]) {
 }
 
 export function textures(nodeTypes: string[]) {
-    generateTextures( nodeTypes, renderer );
+    // generateTextures( nodeTypes, renderer );
 }
 
-export default renderer;
+// export default renderer;

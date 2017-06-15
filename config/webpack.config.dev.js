@@ -113,7 +113,8 @@ module.exports = {
           /\.css$/,
           /\.json$/,
           /\.svg$/,
-          /\.(ts|tsx)(\?.*)?$/
+          /\.(ts|tsx)(\?.*)?$/,
+          /\.(frag|vert)$/
         ],
         loader: 'url',
         query: {

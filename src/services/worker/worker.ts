@@ -71,6 +71,7 @@ function receiveProfile({ heap, width }: ProfilePayload) {
         nodeTypes: heapProfile.snapshot._nodeTypes
     });
 
+    //TODO: Make this actually pull from the frontend filter
     const children = getNodes({
         type: 'all',
         num: { retainedSize: 200 }

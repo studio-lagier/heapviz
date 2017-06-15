@@ -42,8 +42,7 @@ export default function reducer(state: RendererState, {type, payload}:FSA) {
             }
         case RENDER_COMPLETE:
             return {
-                ...state,
-                canvasDirty: true
+                ...state
             }
         default:
             const w = getWidth();
