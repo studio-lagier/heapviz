@@ -26,18 +26,17 @@ export default class NodeCircle {
 
     constructor(node: Node, canvasState: glState, hitCanvasState: glState) {
         this.node = node;
-        const {x, y, r, t, i} = node;
-        const size = r;
-        this.retainedSize = this.createSprite(size, x, y, createNodeColor(t, 140), canvasState);
+        const {x, y, r, t, i, s, v} = node;
+        this.retainedSize = this.createSprite(r, x, y, createNodeColor(t, 0.6), canvasState);
         this.hitColor = createHitColor(i);
-        const color = hexToColor(this.hitColor).concat(255);
-        this.hitCircle = this.createSprite(size, x, y, color, hitCanvasState);
+        const color = hexToColor(this.hitColor).concat(1);
+        this.hitCircle = this.createSprite(r, x, y, color, hitCanvasState);
 
-        const selfSize = node.r * node.s / node.v;
+        const selfSize = r * s / v;
 
         //Need to guard against undrawable circles
         if (selfSize && selfSize > 0.00000000000001) {
-            this.selfSize = this.createSprite(selfSize, node.x, node.y, createNodeColor(t, 220), canvasState);
+            this.selfSize = this.createSprite(selfSize, x, y, createNodeColor(t, 0.8), canvasState);
         } else {
             throw new Error(`Got tiny selfsize: ${selfSize}`);
         }
@@ -76,5 +75,15 @@ export default class NodeCircle {
         //     this.outline = this.createSprite((node.r + 1) * 2, node.x, node.y, textures['0xF08080']);
         //     this.outlineInner = this.createSprite(node.r * 2, node.x, node.y, textures['0xFFFFFF']);
         // }
+    }
+
+    intersects(x: number, y: number) {
+        const dx = Math.abs(x - this.node.x);
+        const dy = Math.abs(y - this.node.y);
+        const r = this.node.r;
+
+        if (dx > r || dy > r) return false;
+        if (dx + dy <= r) return true;
+        if (dx * dx + dy * dy <= r * r) return true;
     }
 }

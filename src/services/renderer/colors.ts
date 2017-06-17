@@ -13,7 +13,7 @@ export function hexToColor(hex: string) {
     hex = hex.replace('#', '');
     for (var i = 0; i < 6; i = i + 2) {
         const color = hex.slice(i, i + 2);
-        digits.push(parseInt(color, 16));
+        digits.push(parseInt(color, 16)/255);
     }
 
     return digits;
