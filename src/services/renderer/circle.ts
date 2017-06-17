@@ -10,19 +10,22 @@ import * as translate from 'gl-mat4/translate';
 import * as scale from 'gl-mat4/scale';
 import * as ortho from 'gl-mat4/ortho';
 
-let gl: any;
-let clear: any;
-let projectionMatrix = create();
-let shader: any;
-let matrix = create();
-let cache: any;
+const projectionMatrix = create();
+const matrix = create();
 
-export function init(canvas: HTMLCanvasElement, bg: [number, number, number]) {
-    cache = {};
-    clear = glClear({ color: bg });
-    gl = context(canvas, {premultipliedAlpha: false, alpha: false, antialias: true});
+export interface glState {
+    cache: any;
+    clear: any;
+    gl: any;
+    shader: any;
+}
 
-    shader = glShader(gl, vert, frag);
+export function init(canvas: HTMLCanvasElement, bg: [number, number, number], options?:any): glState {
+    const cache = {};
+    const clear = glClear({ color: bg });
+    const gl = context(canvas, Object.assign({premultipliedAlpha: false, alpha: false, antialias: true}, options));
+
+    const shader = glShader(gl, vert, frag);
     shader.attributes.aPosition.location = 0;
 
     var width = gl.drawingBufferWidth;
@@ -39,10 +42,13 @@ export function init(canvas: HTMLCanvasElement, bg: [number, number, number]) {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.disable(gl.DEPTH_TEST);
+
+    return { cache, clear, gl, shader };
 }
 
 //Radius, scale, color
-export function circle(r: number, s: number, c: number[]) {
+export function circle(r: number, s: number, c: number[], state: glState) {
+    const { cache, gl } = state;
     if (!cache[s]) {
         var e = s + 2;
         var fan = new Float32Array(e * 2);
@@ -70,7 +76,8 @@ export function circle(r: number, s: number, c: number[]) {
     };
 }
 
-export function update(objects: any[]) {
+export function update(objects: any[], state: glState) {
+    const { gl, clear, shader } = state;
     clear(gl);
 
     for (var i = 0; i < objects.length; i++) {
@@ -89,7 +96,8 @@ export function update(objects: any[]) {
     }
 }
 
-export function dispose() {
+export function dispose(state: glState) {
+    const { cache, shader } = state;
     Object.keys(cache).forEach(function (k) {
         cache[k].unbind();
         cache[k].dispose();

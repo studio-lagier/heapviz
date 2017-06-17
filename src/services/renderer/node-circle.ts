@@ -1,58 +1,50 @@
 import * as PIXI from 'pixi.js';
-// import { textures } from './textures';
 import { Node } from '../worker/heap-profile-parser';
-import { circle } from './circle';
-// import EventEmitter from 'events';
+import { circle, glState } from './circle';
+import { color, hexToColor, padHex } from './colors';
 
 interface NodeCircleProps {
     node: Node;
-    // texture: PIXI.Texture
 }
+
+function createNodeColor(t: string, a: number) {
+    return color(t).concat(a);
+}
+
+function createHitColor(i: number) {
+    const base = i.toString(16);
+    return padHex(base);
+}
+
 export default class NodeCircle {
     node: Node;
-    texture: PIXI.Texture;
     retainedSize: {};
     selfSize: {};
+    hitCircle: {};
+    hitColor: string;
     locked = false;
-    outline: PIXI.Sprite;
-    outlineInner: PIXI.Sprite;
 
-    //TODO: Replace multiple sprites with single updating texture
-
-    constructor(node: Node) {
-        // super();
-
+    constructor(node: Node, canvasState: glState, hitCanvasState: glState) {
         this.node = node;
-        // this.texture = texture;
-
-        const size = node.r;
-        this.retainedSize = this.createSprite(size, node.x, node.y);
-        // this.retainedSize.alpha = 0.6;
-        // this.retainedSize.interactive = true;
-
-        //Some magic numbers because it's actually the size of the texture that gets scaled by the sprite
-        // this.retainedSize.hitArea = new PIXI.Circle(0, 0, 512);
-        // this.retainedSize
-        //     .on('mouseover', () => this.mouseover())
-        //     .on('mouseout', () => this.mouseout())
-        //     .on('mousedown', () => this.mousedown());
+        const {x, y, r, t, i} = node;
+        const size = r;
+        this.retainedSize = this.createSprite(size, x, y, createNodeColor(t, 140), canvasState);
+        this.hitColor = createHitColor(i);
+        const color = hexToColor(this.hitColor).concat(255);
+        this.hitCircle = this.createSprite(size, x, y, color, hitCanvasState);
 
         const selfSize = node.r * node.s / node.v;
 
         //Need to guard against undrawable circles
         if (selfSize && selfSize > 0.00000000000001) {
-            this.selfSize = this.createSprite(selfSize, node.x, node.y);
-            // this.selfSize.alpha = 0.8;
+            this.selfSize = this.createSprite(selfSize, node.x, node.y, createNodeColor(t, 220), canvasState);
         } else {
             throw new Error(`Got tiny selfsize: ${selfSize}`);
         }
     }
 
-    createSprite(size: number, x: number, y: number, texture = this.texture) {
-        const sprite = circle(size, 256, [0,0,0,1]);
-        // sprite.width = size;
-        // sprite.height = size;
-        // sprite.anchor = <PIXI.ObservablePoint>{ x: 0.5, y: 0.5 };
+    createSprite(size: number, x: number, y: number, c: number[], state: glState) {
+        const sprite = circle(size, 32, c, state);
         sprite.t = [x,y,0];
         return sprite;
     }

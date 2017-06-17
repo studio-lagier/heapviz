@@ -14,8 +14,10 @@ interface RendererProps {
 
 export class Renderer extends React.Component<RendererProps, {}> {
 
+    canvas: HTMLCanvasElement;
+
     componentWillUnmount() {
-        destroyRenderer();
+        destroyRenderer(this.canvas);
     }
 
     //Make this better - create renderer during app init and on
@@ -24,9 +26,12 @@ export class Renderer extends React.Component<RendererProps, {}> {
     render() {
         const { width, height } = this.props;
         return (
-            <div className="Renderer">
-                <canvas width={width} height={height} ref={
-                    canvas => createRenderer(canvas)
+            <div className="Renderer" style={{ width, height }}>
+                <canvas width={2*width} height={2*height} ref={
+                    canvas => {
+                        createRenderer(canvas);
+                        this.canvas = canvas;
+                    }
                 } />
             </div>
         );

@@ -67,7 +67,7 @@ export const loadFile: Epic<FSA, any> =
                 of(fileLoaded(buff)),
                 of(transferProfile({
                     heap: buff,
-                    width: getWidth()
+                    width: getWidth() * 2
                 }))
             )
         )

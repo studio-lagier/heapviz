@@ -3,7 +3,8 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Observable } from 'rxjs';
-import { drawNodes, textures } from './index';
+import { drawNodes } from './index';
+import { createColorGenerator } from './colors';
 
 const { concat, of } = Observable;
 
@@ -79,7 +80,7 @@ export const createTextures: Epic<FSA, any> =
     action$ => action$
         .ofType(PROFILE_LOADED)
         .map(({ payload: { nodeTypes } }) => {
-            textures(nodeTypes);
+            createColorGenerator(nodeTypes);
             return texturesCreated();
         });
 

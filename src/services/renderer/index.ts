@@ -4,35 +4,47 @@ import { FSA } from '../../../typings/fsa';
 import { actions } from './state';
 import { Node } from '../worker/heap-profile-parser';
 import NodeCircle from './node-circle';
-// import { generateTextures, texture } from './textures';
-import { init, update, dispose } from './circle';
+import { init, update, dispose, glState } from './circle';
+import {colorToHex} from './colors';
 
-// const stage = new PIXI.Container();
-// (<any>window).stage = stage;
-let circles:any = [];
+let circles: any = [];
+let hitCircles: any = [];
+let canvasState: glState;
+let hitCanvasState: glState;
+let hitCircleMap: any = {};
+let listener: any;
+const colorBuff = new Uint8Array(3);
 
-export function destroyRenderer() {
-    dispose();
+export function destroyRenderer(canvas:HTMLCanvasElement) {
+    dispose(canvasState);
+    dispose(hitCanvasState);
     circles = [];
+    hitCircles = [];
+    hitCircleMap = {};
+    canvas.removeEventListener('mousemove', listener);
+}
+
+export function pickCircle(x: number, y: number) {
+    const {gl} = hitCanvasState;
+    const color = gl.readPixels(x, gl.drawingBufferHeight - y, 1, 1, gl.RGB, gl.UNSIGNED_BYTE, colorBuff);
+    console.log(colorBuff);
+    console.log(colorToHex(colorBuff));
+    console.log(hitCircleMap[colorToHex(colorBuff)]);
 }
 
 export function createRenderer(canvas: HTMLCanvasElement) {
     if (canvas) {
-        init(canvas, [255, 255, 255]);
+        const hitCanvas = <HTMLCanvasElement>canvas.cloneNode();
+        canvasState = init(canvas, [255, 255, 255]);
+        hitCanvasState = init(hitCanvas, [255, 255, 255], {premultipliedAlpha: true});
+
+        listener = (ev:MouseEvent) => {
+            pickCircle(ev.offsetX, ev.offsetY);
+        }
+
+        canvas.addEventListener('mousemove', listener);
     }
-    // const options = Object.assign({
-    //     resolution: 2,
-    //     transparent: true,
-    //     antialias: true
-    // }, o);
-
-    // const newRenderer = PIXI.autoDetectRenderer(width, height, options);
-    // newRenderer.render(stage);
-    // return newRenderer;
 }
-
-// const renderer = createRenderer(1024, 1024);
-// (<any>window).renderer = renderer;
 
 function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
     let currentNode = start;
@@ -40,13 +52,16 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
     const startTime = Date.now();
     while (currentNode < nodes.length && timeDiff < 10) {
         const node = nodes[currentNode];
-        const circle = new NodeCircle(node);
+        const circle = new NodeCircle(node, canvasState, hitCanvasState);
 
         circles.push(circle.retainedSize);
 
         if (circle.selfSize) {
             circles.push(circle.selfSize);
         }
+
+        hitCircles.push(circle.hitCircle);
+        hitCircleMap[circle.hitColor] = circle;
 
         currentNode++;
         timeDiff = Date.now() - startTime;
@@ -56,7 +71,8 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
         sub.next(currentNode);
         requestAnimationFrame(_drawNodes.bind(null, currentNode, nodes, sub));
     } else {
-        update(circles);
+        update(circles, canvasState);
+        update(hitCircles, hitCanvasState);
         sub.complete();
     }
 }
@@ -67,9 +83,3 @@ export function drawNodes(nodes: Node[]) {
         _drawNodes(0, nodes, sub);
     });
 }
-
-export function textures(nodeTypes: string[]) {
-    // generateTextures( nodeTypes, renderer );
-}
-
-// export default renderer;

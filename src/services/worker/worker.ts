@@ -26,7 +26,7 @@ import { FluxStandardAction } from '../../../typings/fsa';
 const { fromEvent } = Observable;
 const dispatcher = new Dispatcher(self, self.postMessage.bind(self));
 let heapProfile: HeapProfile;
-const MAX_NODES = 1000000;
+const MAX_NODES = 10000000;
 
 function serializeResponse(nodes: Array<WireNode>) {
     const te = new TextEncoder();
@@ -71,10 +71,9 @@ function receiveProfile({ heap, width }: ProfilePayload) {
         nodeTypes: heapProfile.snapshot._nodeTypes
     });
 
-    //TODO: Make this actually pull from the frontend filter
     const children = getNodes({
         type: 'all',
-        num: { retainedSize: 200 }
+        num: { retainedSize: 0 }
     }, 0);
     if (!children) return;
 
