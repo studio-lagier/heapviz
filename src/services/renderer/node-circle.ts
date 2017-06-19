@@ -1,11 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Node } from '../worker/heap-profile-parser';
 import { circle, GLState, Circle } from './circle';
-import { color, hexToColor, padHex } from './colors';
-
-function createNodeColor(t: string, a: number) {
-    return color(t).concat(a);
-}
+import { color, hexToColor, padHex, modifyColor } from './colors';
 
 function createHitColor(i: number) {
     const base = i.toString(16);
@@ -22,13 +18,15 @@ export function createHitCircle(node: Node, state: GLState) {
 
 export function createSizeCircles(node: Node, state: GLState) {
     const { r, x, y, t, s, v } = node;
-    const retainedSize = createCircle(r, x, y, createNodeColor(t, 0.6), state);
+    const dark = color(t);
+    const light = modifyColor(dark, 0.1);
+    const retainedSize = createCircle(r, x, y, light, state);
     const sizes = [retainedSize];
 
     const ss = r * s / v;
 
     if (ss) {
-        const selfSize = createCircle(ss, x, y, createNodeColor(t, 0.8), state);
+        const selfSize = createCircle(ss, x, y, dark, state);
         sizes.push(selfSize);
     }
 
@@ -47,13 +45,12 @@ export function createDropShadow(node: Node, state: GLState) {
 }
 
 export function createHighlights(node: Node, state: GLState) {
+    const { t } = node;
     const [retainedSize, selfSize] = createSizeCircles(node, state);
-    retainedSize.c[3] = 0.8;
 
     const highlights = [retainedSize];
 
     if (selfSize) {
-        selfSize.c[3] = 1;
         highlights.push(selfSize);
     }
 

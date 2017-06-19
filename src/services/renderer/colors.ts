@@ -37,10 +37,14 @@ export function createColorGenerator(nodeTypes: string[]) {
 
     _colorGenerator = (type:string) => {
         const hex = <string>_colors(type)
-        return hexToColor(hex);
+        return hexToColor(hex).concat(1);
     }
 }
 
 export function color(type: string) {
     return _colorGenerator(type);
+}
+
+export function modifyColor(color: number[], amount: number) {
+    return color.map((c, i) => i < 3 ? Math.max(Math.min((1 + amount) * c, 255), 0) : c);
 }
