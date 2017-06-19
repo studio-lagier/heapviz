@@ -4,7 +4,7 @@ import { Component } from 'react';
 import './Renderer.pcss';
 import store from '../../store';
 import { connect } from 'react-redux';
-import {createRenderer, destroyRenderer} from '../../services/renderer';
+import {createRenderer, createTopCanvasRenderer, destroyRenderer} from '../../services/renderer';
 
 interface RendererProps {
     width: number;
@@ -15,9 +15,10 @@ interface RendererProps {
 export class Renderer extends React.Component<RendererProps, {}> {
 
     canvas: HTMLCanvasElement;
+    topCanvas: HTMLCanvasElement;
 
     componentWillUnmount() {
-        destroyRenderer(this.canvas);
+        destroyRenderer(this.topCanvas);
     }
 
     //Make this better - create renderer during app init and on
@@ -29,8 +30,14 @@ export class Renderer extends React.Component<RendererProps, {}> {
             <div className="Renderer" style={{ width, height }}>
                 <canvas width={2*width} height={2*height} ref={
                     canvas => {
-                        createRenderer(canvas);
                         this.canvas = canvas;
+                        createRenderer(canvas);
+                    }
+                } />
+                <canvas width={2*width} height={2*height} className="topCanvas" ref={
+                    canvas => {
+                        this.topCanvas = canvas;
+                        createTopCanvasRenderer(canvas);
                     }
                 } />
             </div>

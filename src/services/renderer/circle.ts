@@ -14,10 +14,10 @@ const projectionMatrix = create();
 const matrix = create();
 
 export interface GLState {
-    cache?: any;
-    clear?: any;
-    gl?: any;
-    shader?: any;
+    cache: any;
+    clear: any;
+    gl: any;
+    shader: any;
 }
 
 export interface Circle {
@@ -29,7 +29,7 @@ export interface Circle {
     l: number
 }
 
-export function init(canvas: HTMLCanvasElement, bg: [number, number, number], options?:any): GLState {
+export function init(canvas: HTMLCanvasElement, bg: number[], options?:any): GLState {
     const cache = {};
     const clear = glClear({ color: bg });
     const gl = context(canvas, Object.assign({

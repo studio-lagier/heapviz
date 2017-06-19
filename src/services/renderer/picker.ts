@@ -1,15 +1,12 @@
 import { colorToHex } from './colors';
 import { hitCircleMap, hitCanvasState } from './shared';
+import { intersects } from './node-circle';
 
 const colorBuff = new Uint8Array(3);
 
 function isMatch(color: Uint8Array, x: number, y: number) {
-    let candidate = hitCircleMap[colorToHex(color)];
-    if (candidate) {
-        if (candidate.intersects(x, y)) {
-            return candidate;
-        }
-    }
+    let node = hitCircleMap[colorToHex(color)];
+    if(node) return intersects(node, x, y) && node;
 }
 
 function getCircleFromColor(color: Uint8Array, x: number, y: number) {
