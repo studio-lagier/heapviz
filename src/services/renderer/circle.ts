@@ -89,9 +89,9 @@ export function circle(r: number, s: number, c: number[], state: GLState): Circl
     };
 }
 
-export function update(objects: any[], state: GLState, clearStage:boolean=true) {
+export function update(objects: any[], state: GLState) {
     const { gl, clear, shader } = state;
-    if (clearStage) clear(gl);
+    clear(gl);
 
     for (var i = 0; i < objects.length; i++) {
         var o = objects[i];

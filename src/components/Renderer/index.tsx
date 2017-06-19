@@ -4,7 +4,7 @@ import { Component } from 'react';
 import './Renderer.pcss';
 import store from '../../store';
 import { connect } from 'react-redux';
-import {createRenderer, createTopCanvasRenderer, destroyRenderer} from '../../services/renderer';
+import {createRenderer, createTopCanvasRenderer, destroyRenderer, mousemove, click} from '../../services/renderer';
 
 interface RendererProps {
     width: number;
@@ -34,7 +34,7 @@ export class Renderer extends React.Component<RendererProps, {}> {
                         createRenderer(canvas);
                     }
                 } />
-                <canvas width={2*width} height={2*height} className="topCanvas" ref={
+                <canvas width={2 * width} height={2 * height} className="topCanvas" onMouseMove={mousemove} onClick={click} ref={
                     canvas => {
                         this.topCanvas = canvas;
                         createTopCanvasRenderer(canvas);

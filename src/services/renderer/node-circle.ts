@@ -41,17 +41,16 @@ export function createCircle(size: number, x: number, y: number, c: number[], st
     return sprite;
 }
 
-function createDropShadow(node: Node, state: GLState) {
+export function createDropShadow(node: Node, state: GLState) {
     const { r, x, y } = node;
-    return createCircle(r + 6, x, y, [0, 0, 0, 0.6], state);
+    return createCircle(r + 8, x, y, [0, 0, 0, 0.6], state);
 }
 
 export function createHighlights(node: Node, state: GLState) {
-    const dropShadow = createDropShadow(node, state);
     const [retainedSize, selfSize] = createSizeCircles(node, state);
     retainedSize.c[3] = 0.8;
 
-    const highlights = [dropShadow, retainedSize];
+    const highlights = [retainedSize];
 
     if (selfSize) {
         selfSize.c[3] = 1;
@@ -59,6 +58,11 @@ export function createHighlights(node: Node, state: GLState) {
     }
 
     return highlights;
+}
+
+export function createOutline(node: Node, state: GLState) {
+    const { r, x, y } = node;
+    return createCircle(r + 4, x, y, [255, 0, 0, 0.8], state);
 }
 
 export function intersects(node: Node, x: number, y: number) {
