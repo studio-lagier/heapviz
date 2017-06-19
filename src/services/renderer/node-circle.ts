@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Node } from '../worker/heap-profile-parser';
-import { circle, glState } from './circle';
+import { circle, GLState, Circle } from './circle';
 import { color, hexToColor, padHex } from './colors';
 
 interface NodeCircleProps {
@@ -18,13 +18,13 @@ function createHitColor(i: number) {
 
 export default class NodeCircle {
     node: Node;
-    retainedSize: {};
-    selfSize: {};
-    hitCircle: {};
+    retainedSize: Circle;
+    selfSize: Circle;
+    hitCircle: Circle;
     hitColor: string;
     locked = false;
 
-    constructor(node: Node, canvasState: glState, hitCanvasState: glState) {
+    constructor(node: Node, canvasState: GLState, hitCanvasState: GLState) {
         this.node = node;
         const {x, y, r, t, i, s, v} = node;
         this.retainedSize = this.createSprite(r, x, y, createNodeColor(t, 0.6), canvasState);
@@ -35,38 +35,25 @@ export default class NodeCircle {
         const selfSize = r * s / v;
 
         //Need to guard against undrawable circles
-        if (selfSize && selfSize > 0.00000000000001) {
+        if (selfSize) {
             this.selfSize = this.createSprite(selfSize, x, y, createNodeColor(t, 0.8), canvasState);
-        } else {
-            throw new Error(`Got tiny selfsize: ${selfSize}`);
         }
     }
 
-    createSprite(size: number, x: number, y: number, c: number[], state: glState) {
+    createSprite(size: number, x: number, y: number, c: number[], state: GLState) {
         const sprite = circle(size, 32, c, state);
         sprite.t = [x,y,0];
         return sprite;
     }
 
     highlight(active: boolean) {
-        // this.retainedSize.alpha = active ? 0.8 : 0.6;
-        // if (this.selfSize) {
-        //     this.selfSize.alpha = active ? 1 : 0.8;
-        // }
-    }
+        this.retainedSize.c[3] = active ? 0.8 : 0.6;
 
-    mouseover() {
-        this.highlight(true);
-    }
-
-    mouseout() {
-        if (!this.locked) {
-            this.highlight(false);
+        if (this.selfSize) {
+            this.selfSize.c[3] = active ? 1 : 0.8;
         }
-    }
 
-    mousedown() {
-        // this.emit('mousedown', this.node.d);
+        // this.outline = this.createSprite()
     }
 
     createOutlines() {

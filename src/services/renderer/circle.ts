@@ -13,17 +13,30 @@ import * as ortho from 'gl-mat4/ortho';
 const projectionMatrix = create();
 const matrix = create();
 
-export interface glState {
-    cache: any;
-    clear: any;
-    gl: any;
-    shader: any;
+export interface GLState {
+    cache?: any;
+    clear?: any;
+    gl?: any;
+    shader?: any;
 }
 
-export function init(canvas: HTMLCanvasElement, bg: [number, number, number], options?:any): glState {
+export interface Circle {
+    c: number[],
+    s: number[],
+    t: number[],
+    vertices: any,
+    d: number,
+    l: number
+}
+
+export function init(canvas: HTMLCanvasElement, bg: [number, number, number], options?:any): GLState {
     const cache = {};
     const clear = glClear({ color: bg });
-    const gl = context(canvas, Object.assign({premultipliedAlpha: false, alpha: false, antialias: true}, options));
+    const gl = context(canvas, Object.assign({
+        premultipliedAlpha: false,
+        alpha: false,
+        antialias: true
+    }, options));
 
     const shader = glShader(gl, vert, frag);
     shader.attributes.aPosition.location = 0;
@@ -47,7 +60,7 @@ export function init(canvas: HTMLCanvasElement, bg: [number, number, number], op
 }
 
 //Radius, scale, color
-export function circle(r: number, s: number, c: number[], state: glState) {
+export function circle(r: number, s: number, c: number[], state: GLState): Circle {
     const { cache, gl } = state;
     if (!cache[s]) {
         var e = s + 2;
@@ -76,9 +89,9 @@ export function circle(r: number, s: number, c: number[], state: glState) {
     };
 }
 
-export function update(objects: any[], state: glState) {
+export function update(objects: any[], state: GLState, clearStage:boolean=true) {
     const { gl, clear, shader } = state;
-    clear(gl);
+    if (clearStage) clear(gl);
 
     for (var i = 0; i < objects.length; i++) {
         var o = objects[i];
@@ -96,7 +109,7 @@ export function update(objects: any[], state: glState) {
     }
 }
 
-export function dispose(state: glState) {
+export function dispose(state: GLState) {
     const { cache, shader } = state;
     Object.keys(cache).forEach(function (k) {
         cache[k].unbind();
