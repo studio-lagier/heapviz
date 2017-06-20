@@ -33,8 +33,7 @@ export default function reducer(state: RendererState, {type, payload}:FSA) {
         case RENDER_PROFILE:
             return {
                 ...state,
-                rendering: true,
-                start: 0
+                drawing: true,
             }
         case RENDER_BATCH:
             return {
@@ -43,7 +42,8 @@ export default function reducer(state: RendererState, {type, payload}:FSA) {
             }
         case RENDER_COMPLETE:
             return {
-                ...state
+                ...state,
+                drawing: false
             }
         default:
             const w = getWidth();
@@ -60,7 +60,10 @@ export const actions = createActions({
     renderer: {
         RENDER_PROFILE: (p: ArrayBuffer) => p,
         RENDER_BATCH: (p: number) => p,
-        RENDER_COMPLETE: () => {},
+        RENDER_COMPLETE: [
+            () => { },
+            () => {return {hideMessage:true}}
+        ],
         TEXTURES_CREATED: () => {}
     }
 });

@@ -19,12 +19,13 @@ export class Dispatcher {
      * @param {string} name
      * @param {*} data
      */
-    sendEvent(eventName: string, data?: any, transferrables?: Array<any>) {
+    sendEvent(eventName: string, data?: any, transferrables?: Array<any>, meta?: any) {
 
         this._postMessage({
             //Handle both chrome and our standard actions
             type: eventName.indexOf('/') === -1 ? toActionName(eventName) : eventName,
-            payload: data
+            payload: data,
+            meta
         }, transferrables);
     }
 };

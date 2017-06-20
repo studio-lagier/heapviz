@@ -45,7 +45,7 @@ function transferNodes(children: Array<Node>, nodes: any) {
     }
 
     const ab = serializeResponse(wireNodes);
-    dispatcher.sendEvent(SEND_NODES, ab, [ab]);
+    dispatcher.sendEvent(SEND_NODES, ab, [ab], {message: 'Nodes have transferred, rendering!'});
 }
 
 function fromHeap(heap: ArrayBufferView) {
@@ -69,7 +69,7 @@ function receiveProfile({ heap, width }: ProfilePayload) {
     dispatcher.sendEvent(PROFILE_LOADED, {
         stats,
         nodeTypes: heapProfile.snapshot._nodeTypes
-    });
+    }, undefined, {message: 'Profile has loaded'});
 
     const children = getNodes({
         type: 'all',

@@ -5,28 +5,30 @@ import './App.pcss';
 import store from '../../store';
 import { connect } from 'react-redux';
 import Renderer from '../Renderer';
+import { Redirect } from 'react-router-dom';
 
 interface AppProps {
   message: string;
-  computing: boolean;
+  showMessage: boolean;
   stats: any;
+  hasFile: boolean;
 }
 
-export const App = ({message, computing, stats}: AppProps) => (
-    <div className="App">
-      Visualization goes here
-      <div className="computing">
-        { computing ? "Computing!" : "Not computing... "}
+export const App = ({ showMessage, message, stats, hasFile }: AppProps) => {
+  return hasFile ?
+    (
+      <div className="App">
+        <div className={`message ${showMessage ? 'visible' : ''}`}>
+          <div className="text">{message}</div>
+        </div>
+        <Renderer />
       </div>
-      <div className="message">
-        {message}
-      </div>
-      <Renderer/>
-    </div>
-);
+    ) :
+    (<Redirect to='/'/>)
+}
 
 export default connect(
-  ({ heap: { message, computing, stats } }) => {
-    return { message, computing, stats }
+  ({ heap: { stats }, file: { hasFile }, messages: {showing:showMessage, message} }) => {
+    return { message, showMessage, stats, hasFile }
   }
 )(App);

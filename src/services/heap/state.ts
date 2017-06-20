@@ -3,6 +3,7 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Node } from '../worker/heap-profile-parser';
+import { actions as messagesActions } from '../messages/state';
 
 //Actions
 import {
@@ -28,18 +29,6 @@ export default function reducer(state = {
         case TRANSFER_PROFILE:
             return {
                 ...state,
-                message: 'Begun transfer',
-                computing: true
-            }
-        case SEND_NODES:
-            return {
-                ...state,
-                message: 'Nodes have transferred, rendering!'
-            };
-        case PROGRESS_UPDATE:
-            return {
-                ...state,
-                message: payload,
             }
         case NODE_FETCHED:
             return state;
@@ -47,14 +36,11 @@ export default function reducer(state = {
             const { stats, nodeTypes } = payload;
             return {
                 ...state,
-                message: 'Profile has loaded',
                 stats, nodeTypes
             }
         case TRANSFER_COMPLETE:
             return {
                 ...state,
-                message: 'Transfer complete!',
-                computing: false,
                 nodes: payload
             }
         default:
@@ -62,13 +48,23 @@ export default function reducer(state = {
     }
 };
 
+function sendMessage(message:string) {
+    return { message };
+}
+
 //Action creators
 export const actions = createActions({
     heap: {
         APPLY_FILTERS: (p: { filters: any, idx: number, width: number }) => p,
         FETCH_NODE: (p: { idx: number }) => p,
-        TRANSFER_PROFILE: (p: { heap: ArrayBufferView }) => p,
-        TRANSFER_COMPLETE: (p: Node[]) => p
+        TRANSFER_PROFILE: [
+            (p: { heap: ArrayBufferView }) => p,
+            () => sendMessage('Begun transfer')
+        ],
+        TRANSFER_COMPLETE: [
+            (p: Node[]) => p,
+            () => sendMessage('Transfer complete!')
+        ]
     }
 })
 
@@ -110,3 +106,8 @@ export const decodeNodes: Epic<FSA, any> =
             return transferComplete(heap);
         });
 
+const { message: { showMessage } } = messagesActions;
+export const addProgressUpdateMessages: Epic<FSA, any> =
+    action$ => action$
+        .ofType(PROGRESS_UPDATE)
+        .map(action => showMessage(action.payload));

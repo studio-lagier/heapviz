@@ -14,12 +14,14 @@ export const FILE_LOADED = 'file/FILE_LOADED';
 
 //Reducer
 interface FileState {
+    hasFile: boolean;
     fetching: boolean;
     fileName: string;
     fileBuffer?: ArrayBuffer;
 }
 
 const initialState: FileState = {
+    hasFile: false,
     fetching: false,
     fileName: '',
     fileBuffer: null
@@ -37,7 +39,8 @@ export default function reducer(state = initialState, action: FSA) {
             return {
                 ...state,
                 fetching: false,
-                fileBuffer: action.payload
+                fileBuffer: action.payload,
+                hasFile: true
             };
 
         default:
@@ -63,14 +66,18 @@ export const loadFile: Epic<FSA, any> =
                 .then(result => result.arrayBuffer()))
         )
         .mergeMap(buff => concat(
-                of(push('/viz')),
                 of(fileLoaded(buff)),
                 of(transferProfile({
                     heap: buff,
                     width: getWidth() * 2
                 }))
             )
-        )
+    )
+
+export const onFileLoaded: Epic<FSA, any> =
+    action$ => action$
+        .ofType(FILE_LOADED)
+        .map(() => push('/viz'));
 
 //TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
 function getWidth(): number {
