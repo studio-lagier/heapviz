@@ -10,15 +10,17 @@ import {MouseEvent} from 'react';
 
 let outline: Circle[];
 
-export const mousemove = (ev: MouseEvent<HTMLCanvasElement>) => {
+export const mousemove = (ev: MouseEvent<HTMLCanvasElement>, cb:(p:Node) => FSA) => {
     ifNodeExists(ev, node => {
         updateTopCanvas(node);
+        return cb(node);
     });
 }
 
-export const click = (ev: MouseEvent<HTMLCanvasElement>) => {
+export const click = (ev: MouseEvent<HTMLCanvasElement>, cb:(p:Node) => FSA) => {
     ifNodeExists(ev, node => {
         updateTopCanvas(node, true);
+        cb(node);
     });
 }
 

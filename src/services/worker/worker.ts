@@ -73,7 +73,7 @@ function receiveProfile({ heap, width }: ProfilePayload) {
 
     const children = getNodes({
         type: 'all',
-        num: { retainedSize: 0 }
+        num: { retainedSize: 200 }
     }, 0);
     if (!children) return;
 
@@ -118,7 +118,7 @@ function applyFilters(
     dispatcher.sendEvent(TRANSFER_COMPLETE);
 }
 
-function fetchNode({ idx }: {idx: number}) {
+function fetchNode(idx:number) {
     const node = heapProfile.fetchNode(idx);
     dispatcher.sendEvent(NODE_FETCHED, { idx, node });
 }

@@ -12,6 +12,10 @@
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-1.0.6.tgz#4200e575aee591ee7078d4a5c235dff69dadf782"
 
+"@types/filesize@^3.2.15":
+  version "3.2.15"
+  resolved "https://registry.yarnpkg.com/@types/filesize/-/filesize-3.2.15.tgz#a97325f27a5ff7974c7cbd7afa244b8a7affe668"
+
 "@types/history@*", "@types/history@^4.5.1":
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.5.1.tgz#da4a145410466eac20e94b51c8778a7551d1d4db"
@@ -2531,6 +2535,10 @@ fileset@^2.0.2:
 filesize@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.3.0.tgz#53149ea3460e3b2e024962a51648aa572cf98122"
+
+filesize@^3.5.10:
+  version "3.5.10"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.5.10.tgz#fc8fa23ddb4ef9e5e0ab6e1e64f679a24a56761f"
 
 fill-range@^2.1.0:
   version "2.2.3"

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/d3-scale": "^1.0.10",
+    "@types/filesize": "^3.2.15",
     "@types/history": "^4.5.1",
     "@types/lodash": "^4.14.64",
     "@types/pixi.js": "^4.5.0",
@@ -17,6 +18,7 @@
     "@types/text-encoding": "^0.0.30",
     "d3-scale": "^1.0.6",
     "fetch": "^1.1.0",
+    "filesize": "^3.5.10",
     "gl-buffer": "^2.1.2",
     "gl-clear": "^2.0.0",
     "gl-context": "^0.1.1",

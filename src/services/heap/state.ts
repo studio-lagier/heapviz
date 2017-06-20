@@ -16,6 +16,7 @@ import {
     PROFILE_LOADED,
     TRANSFER_COMPLETE
 } from '../worker/messages';
+const PICK_NODE = 'heap/PICK_NODE';
 
 //Reducer
 export default function reducer(state = {
@@ -26,12 +27,21 @@ export default function reducer(state = {
             return state;
         case FETCH_NODE:
             return state;
+        case PICK_NODE:
+            return {
+                ...state,
+                hoverNode: payload
+            };
         case TRANSFER_PROFILE:
             return {
                 ...state,
+                computing: true
             }
         case NODE_FETCHED:
-            return state;
+            return {
+                ...state,
+                currentNode: payload.node
+            };
         case PROFILE_LOADED:
             const { stats, nodeTypes } = payload;
             return {
@@ -41,6 +51,7 @@ export default function reducer(state = {
         case TRANSFER_COMPLETE:
             return {
                 ...state,
+                computing: false,
                 nodes: payload
             }
         default:
@@ -56,7 +67,7 @@ function sendMessage(message:string) {
 export const actions = createActions({
     heap: {
         APPLY_FILTERS: (p: { filters: any, idx: number, width: number }) => p,
-        FETCH_NODE: (p: { idx: number }) => p,
+        FETCH_NODE: (p:number) => p,
         TRANSFER_PROFILE: [
             (p: { heap: ArrayBufferView }) => p,
             () => sendMessage('Begun transfer')
@@ -64,7 +75,8 @@ export const actions = createActions({
         TRANSFER_COMPLETE: [
             (p: Node[]) => p,
             () => sendMessage('Transfer complete!')
-        ]
+        ],
+        PICK_NODE: (p: Node) => p
     }
 })
 
@@ -84,7 +96,8 @@ export const fetchNode: Epic<FSA, any> =
         .mergeMap(action => {
             worker.postMessage(action)
             return workerMessages$
-                .takeUntil(workerMessages$.ofType(NODE_FETCHED))
+                .ofType(NODE_FETCHED)
+                .take(1);
         });
 
 export const transferProfile: Epic<FSA, any> =
