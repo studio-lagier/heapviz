@@ -25,11 +25,11 @@ interface AppProps {
 }
 
 export const App = ({ showMessage, computing, drawing, message, stats, hasFile, hoverNode, currentNode, nodesLength }: AppProps) => {
-  console.log({showMessage, computing, drawing})
   return hasFile ?
     (
       <div className="App">
-        <div className={`message ${showMessage ? 'visible' : ''}`}>
+        {/*Dumb conditional here because of timing issues with very fast renders meaning we can get SHOW_MESSAGE's from our worker after our render has completed and triggered HIDE_MESSAGE*/}
+        <div className={`message ${showMessage && (computing || drawing) ? 'visible' : ''}`}>
           <div className="text">{message}</div>
         </div>
 
