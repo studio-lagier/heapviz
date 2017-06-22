@@ -8,6 +8,7 @@ import Renderer from '../Renderer';
 import StatsWindow from '../StatsWindow';
 import HoverNode from '../HoverNode';
 import CurrentNode from '../CurrentNode';
+import Filters from '../Filters';
 import { Redirect } from 'react-router-dom';
 import { Node } from '../../services/worker/heap-profile-parser';
 
@@ -15,13 +16,16 @@ interface AppProps {
   message: string;
   showMessage: boolean;
   computing: boolean;
+  drawing: boolean;
   stats: any;
   hasFile: boolean;
   hoverNode: Node;
   currentNode: Node;
+  nodesLength: number;
 }
 
-export const App = ({ showMessage, computing, message, stats, hasFile, hoverNode, currentNode }: AppProps) => {
+export const App = ({ showMessage, computing, drawing, message, stats, hasFile, hoverNode, currentNode, nodesLength }: AppProps) => {
+  console.log({showMessage, computing, drawing})
   return hasFile ?
     (
       <div className="App">
@@ -34,8 +38,10 @@ export const App = ({ showMessage, computing, message, stats, hasFile, hoverNode
           null
         }
 
+        <Filters />
+
         {stats ?
-          <StatsWindow stats={stats} /> :
+          <StatsWindow stats={stats} length={nodesLength}/> :
           null
         }
 
@@ -51,14 +57,13 @@ export const App = ({ showMessage, computing, message, stats, hasFile, hoverNode
               null
           }
         </div>
-        {/*<Filters />*/}
       </div>
     ) :
     (<Redirect to='/'/>)
 }
 
 export default connect(
-  ({ heap: { stats, computing, hoverNode, currentNode }, file: { hasFile }, messages: {showing:showMessage, message} }) => {
-    return { message, hoverNode, currentNode, showMessage, stats, hasFile, computing }
+  ({ heap: { stats, computing, hoverNode, currentNode, nodesLength }, file: { hasFile }, renderer: {drawing }, messages: {showing:showMessage, message} }) => {
+    return { message, hoverNode, currentNode, showMessage, stats, hasFile, computing, drawing, nodesLength }
   }
 )(App);

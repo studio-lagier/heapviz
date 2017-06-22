@@ -5,11 +5,13 @@ import * as filesize from 'filesize';
 
 interface StatsWindowProps {
     stats: any;
+    length: number;
 }
 
-export const StatsWindow = ({ stats }: StatsWindowProps) => {
+export const StatsWindow = ({ stats, length }: StatsWindowProps) => {
     const renderStats = stats.totals;
     renderStats["Number of samples"] = stats.samples.length
+    renderStats["Number of nodes"] = length;
     return (
         <div className="StatsWindow">
             <Stats stats={renderStats} />

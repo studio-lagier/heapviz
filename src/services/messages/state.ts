@@ -3,6 +3,10 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 
+export function sendMessage(message:string) {
+    return { message };
+}
+
 //Actions
 export const SHOW_MESSAGE = 'message/SHOW_MESSAGE';
 export const HIDE_MESSAGE = 'message/HIDE_MESSAGE';

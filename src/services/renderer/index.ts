@@ -5,7 +5,7 @@ import { Node } from '../worker/heap-profile-parser';
 import {createSizeCircles, createHitCircle, createHighlights, createOutline, createDropShadow, intersects} from './node-circle';
 import { init, update, Circle, GLState } from './circle';
 import { pickCircle } from './picker';
-import { circles, hitCircles, canvasState, hitCanvasState, topCanvasState, hitCircleMap, setState, clearState } from './shared';
+import { circles, hitCircles, canvasState, hitCanvasState, topCanvasState, hitCircleMap, setState, clearState, clearCanvas } from './shared';
 import {MouseEvent} from 'react';
 
 let outline: Circle[];
@@ -98,6 +98,7 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>) {
 }
 
 export function drawNodes(nodes: Node[]) {
+    clearCanvas();
     const { renderer: { renderComplete, renderBatch } } = actions;
     return new Observable(sub => {
         _drawNodes(0, nodes, sub);

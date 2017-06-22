@@ -3,7 +3,8 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Node } from '../worker/heap-profile-parser';
-import { actions as messagesActions } from '../messages/state';
+import { actions as messagesActions, sendMessage } from '../messages/state';
+import { SUBMIT_FILTERS } from '../filters/state';
 
 //Actions
 import {
@@ -20,13 +21,15 @@ const PICK_NODE = 'heap/PICK_NODE';
 
 //Reducer
 export default function reducer(state = {
-    message: 'Idle'
+    message: 'Idle',
+    nodesLength: 0
 }, {type, payload}: FSA) {
     switch (type) {
-        case APPLY_FILTERS:
-            return state;
-        case FETCH_NODE:
-            return state;
+        case SUBMIT_FILTERS:
+            return {
+                ...state,
+                computing: true
+            };
         case PICK_NODE:
             return {
                 ...state,
@@ -52,16 +55,13 @@ export default function reducer(state = {
             return {
                 ...state,
                 computing: false,
-                nodes: payload
+                nodes: payload,
+                nodesLength: payload.length
             }
         default:
             return state;
     }
 };
-
-function sendMessage(message:string) {
-    return { message };
-}
 
 //Action creators
 export const actions = createActions({
@@ -80,10 +80,18 @@ export const actions = createActions({
     }
 })
 
+
+//TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
+function getWidth(): number {
+    return Math.min(window.innerWidth, window.innerHeight);
+}
+
 //Epics
+const { heap: { applyFilters:af } } = actions;
 export const applyFilters: Epic<FSA, any> =
     action$ => action$
-        .ofType(APPLY_FILTERS)
+        .ofType(SUBMIT_FILTERS)
+        .map(({ payload: filters }) => af({filters, idx:0, width:getWidth() * 2}))
         .mergeMap(action => {
             worker.postMessage(action);
             return workerMessages$

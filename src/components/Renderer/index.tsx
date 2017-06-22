@@ -27,9 +27,7 @@ export class Renderer extends React.Component<RendererProps, {}> {
         destroyRenderer(this.topCanvas);
     }
 
-    //Make this better - create renderer during app init and on
-    // width/height change. When new renderer is created, flip
-    // dirty flag to re-append
+    //Fix this on width/height change
     render() {
         const { width, height, onMouseMove, onClick } = this.props;
         return (

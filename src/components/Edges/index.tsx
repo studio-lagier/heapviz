@@ -26,9 +26,10 @@ interface Stats {
 }
 
 function edgeToStats(edge:Edge) {
-    const { name, type, node: { name: nodeName, type: nodeType, retainedSize: nodeRetainedSize, selfSize: nodeSelfSize } } = edge;
+    const { name, edgeIndex, type, node: { name: nodeName, type: nodeType, retainedSize: nodeRetainedSize, selfSize: nodeSelfSize } } = edge;
 
     return {
+        id: edgeIndex,
         name,
         type,
         nodeName,
@@ -49,7 +50,7 @@ export const Edges = ({ edges }: EdgesProps) => {
     return (
         <div className="Edges">
             <strong>Edges:</strong>
-            {renderEdges.map((edge: Stats) => <Stats stats={edge} />)}
+            {renderEdges.map((edge: Stats) => <Stats key={edge.id} stats={edge} />)}
         </div>
     )
 };

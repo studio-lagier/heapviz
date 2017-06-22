@@ -8,9 +8,10 @@ import heap, { fetchNode, transferProfile, applyFilters, decodeNodes, addProgres
 import file, { loadFile, onFileLoaded } from './services/file/state';
 import renderer, { renderNodes, createTextures } from './services/renderer/state';
 import messages, { showMessage, hideMessage } from './services/messages/state';
+import filters from './services/filters/state';
 export const history = createHistory();
 const rootReducer = combineReducers({
-    heap, file, renderer, messages,
+    heap, file, renderer, messages, filters,
     router: routerReducer
 })
 

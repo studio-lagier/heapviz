@@ -13,12 +13,16 @@ export var topCanvasState: GLState;
 export var hitCircleMap:HitCircleMap = {};
 
 export function clearState() {
-    circles = [];
-    hitCircles = [];
-    hitCircleMap = {};
+    clearCanvas();
     dispose(canvasState);
     dispose(hitCanvasState);
     dispose(topCanvasState);
+}
+
+export function clearCanvas() {
+    circles = [];
+    hitCircles = [];
+    hitCircleMap = {};
 }
 
 export function setState(state: GLState, target:string) {

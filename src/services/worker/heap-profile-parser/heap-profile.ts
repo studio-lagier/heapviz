@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { Dispatcher, Node } from './index';
 import { WebInspector } from '../web-inspector';
+import { FilterState } from '../../filters/state';
 
 interface RawNode {
     [key: string]: any
@@ -17,13 +18,6 @@ interface Heap {
 interface NodeFilter {
     minNodeId: number
     maxNodeId: number
-}
-
-export interface Filters {
-    type: string
-    num: {
-        [key: string]: number
-    }
 }
 
 export class HeapProfile {
@@ -130,18 +124,20 @@ export class HeapProfile {
         };
     }
 
-    applyFilters({filters, idx}: {filters: Filters, idx: number}) {
+    applyFilters({ filters, idx }: { filters: FilterState, idx: number }) {
+        const { type, ...numFilters } = filters;
+
         return this.samples[idx].filter(
             node => {
                 if (node.type === 'synthetic') {
                     return false;
                 }
 
-                if (filters.type !== 'all' && node.type !== filters.type) {
+                if (type !== 'all' && node.type !== type) {
                     return false;
                 }
 
-                return _.reduce(filters.num,
+                return _.reduce(numFilters,
                     (all, val, key) => all && node[key] >= val,
                     true);
             }

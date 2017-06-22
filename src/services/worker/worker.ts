@@ -3,8 +3,9 @@ import { vsprintf } from './lib/vsprintf';
 (<any>self).vsprintf = vsprintf;
 
 import { WebInspector } from './web-inspector';
-import { Node, WireNode, Dispatcher, HeapProfile, Filters } from './heap-profile-parser';
+import { Node, WireNode, Dispatcher, HeapProfile } from './heap-profile-parser';
 import { Observable } from 'rxjs';
+import { FilterState, initialFilters } from '../filters/state';
 
 importScripts('/pack-circles/index.js');
 declare var Module: any;
@@ -71,10 +72,7 @@ function receiveProfile({ heap, width }: ProfilePayload) {
         nodeTypes: heapProfile.snapshot._nodeTypes
     }, undefined, {message: 'Profile has loaded'});
 
-    const children = getNodes({
-        type: 'all',
-        num: { retainedSize: 200 }
-    }, 0);
+    const children = getNodes(initialFilters, 0);
     if (!children) return;
 
     dispatcher.sendEvent(PROGRESS_UPDATE, 'Calculating layout. If this is taking a long time, please increase the filter');
@@ -84,7 +82,7 @@ function receiveProfile({ heap, width }: ProfilePayload) {
     dispatcher.sendEvent(TRANSFER_COMPLETE);
 }
 
-function getNodes(filters: Filters, idx: number) {
+function getNodes(filters: FilterState, idx: number) {
     const nodes = heapProfile.applyFilters({ filters, idx });
     if (nodes.length > MAX_NODES) {
         dispatcher.sendEvent(PROGRESS_UPDATE, `Current filter contains ${nodes.length} nodes, max nodes is ${MAX_NODES}. Please increase filter to reduce number of visible nodes`);
@@ -107,7 +105,7 @@ function generateLayout(children: Node[], width: number) {
 
 function applyFilters(
     { filters, idx, width }:
-        { filters: Filters, idx: number, width: number }
+        { filters: FilterState, idx: number, width: number }
 ) {
     //Send samples across in chunks here
     const children = getNodes(filters, idx);
