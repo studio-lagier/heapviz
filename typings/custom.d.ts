@@ -26,3 +26,5 @@ declare module 'raw!*' {
   const content: any;
   export = content;
 }
+
+declare var $: any

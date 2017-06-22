@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { EventHandler, MouseEvent } from 'react';
+import { EventHandler, MouseEvent, Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Component } from 'react';
 import './Renderer.pcss';
 import store from '../../store';
 import { connect } from 'react-redux';

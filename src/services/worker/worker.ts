@@ -35,8 +35,12 @@ function serializeResponse(nodes: Array<WireNode>) {
 }
 
 function transferNodes(children: Array<Node>, nodes: any) {
+    if (!children.length) {
+        return dispatcher.sendEvent(SEND_NODES, serializeResponse([]), undefined, 'No nodes in filter');
+    }
+
     let node:WireNode;
-    const wireNodes:WireNode[] = [];
+    const wireNodes: WireNode[] = [];
     for (var i = 0; i < nodes.size(); i++) {
         node = children[i].toMed();
         node.x = nodes.get(i).x;

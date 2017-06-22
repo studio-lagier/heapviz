@@ -2,7 +2,7 @@ import * as React from 'react';
 import { EventHandler, MouseEvent, ChangeEvent } from 'react';
 import './Filters.pcss';
 import Filter from '../Filter';
-import SelectFilter from '../Filter';
+import SelectFilter from '../SelectFilter';
 import { connect } from 'react-redux';
 import { actions, FilterState } from '../../services/filters/state';
 
@@ -17,8 +17,7 @@ export const Filters = ({ onChange, onClick, filters, nodeTypes }: FiltersProps)
     return (
         <div className="Filters">
             {Object.keys(filters).map(filter => filter === 'type' ?
-                    null
-                    :
+                (nodeTypes && <SelectFilter key="type" nodeTypes={nodeTypes} onChange={onChange('type')} value={filters.type}/>) :
                 <Filter key={filter} type={filter} value={filters[filter]} onChange={onChange(filter)} />
             )}
             <button className="waves-effect waves-light btn" onClick={() => onClick(filters)}>Apply</button>
