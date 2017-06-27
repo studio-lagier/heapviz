@@ -20,9 +20,6 @@ interface RendererProps {
 
 export class Renderer extends React.Component<RendererProps, {}> {
 
-    canvas: HTMLCanvasElement;
-    topCanvas: HTMLCanvasElement;
-
     componentWillUnmount() {
         destroyRenderer();
     }
@@ -43,10 +40,14 @@ export default connect(
   ({ renderer: { width, height, cached } }) => {
       return { width, height, cached };
     },
-  dispatch => {
-      return {
-          onMouseMove: (ev, cached) => mousemove(ev, cached, node => dispatch(pickNode(node))),
-          onClick: (ev, cached) => click(ev, cached, node => dispatch(fetchNode(node.d)))
-      }
-  }
+    null,
+    (stateProps, dispatchProps:any) => {
+        const { dispatch } = dispatchProps;
+        const { cached } = stateProps;
+        return {
+            ...stateProps,
+            onMouseMove: (ev:MouseEvent<HTMLCanvasElement>, cached: boolean) => mousemove(ev, cached, node => dispatch(pickNode(node))),
+            onClick: (ev:MouseEvent<HTMLCanvasElement>, cached: boolean) => click(ev, cached, node => dispatch(fetchNode(node.d)))
+        }
+    }
 )(Renderer);

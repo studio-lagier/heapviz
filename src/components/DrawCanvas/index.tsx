@@ -25,28 +25,31 @@ export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
     }
 
     componentWillReceiveProps({ cached }: DrawCanvasProps) {
-        console.log('here');
         if (cached === this.props.cached) return;
-        if (cached) {
+        const drawAppended = this.mountPoint.children[0] === this.drawCanvas;
+
+        if (cached && drawAppended) {
             this.mountPoint.removeChild(this.drawCanvas);
             this.mountPoint.appendChild(this.cachedDrawCanvas);
-        } else {
+        } else if(!cached && !drawAppended) {
             this.mountPoint.removeChild(this.cachedDrawCanvas);
             this.mountPoint.appendChild(this.drawCanvas);
         }
     }
 
     shouldComponentUpdate() {
-        console.log('there');
         return false;
     }
 
     render() {
         return (
             <div className="DrawCanvas" ref={mountPoint => {
+                const { cached } = this.props;
                 if (!mountPoint) return;
                 this.mountPoint = mountPoint;
-                mountPoint.appendChild(this.drawCanvas);
+                mountPoint.appendChild(cached ?
+                    this.cachedDrawCanvas :
+                    this.drawCanvas);
             }}/>
         );
     }

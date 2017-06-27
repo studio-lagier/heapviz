@@ -7,15 +7,24 @@ import { createTopCanvasRenderer, destroyRenderer } from '../../services/rendere
 interface TopCanvasProps {
     width: number;
     height: number;
-    cached: boolean;
     onMouseMove: Function;
     onClick: Function;
+    cached: boolean;
 }
 
-export class TopCanvas extends React.Component<TopCanvasProps, {}> {
+export class TopCanvas extends React.Component<TopCanvasProps, {cached: boolean}> {
 
     canvas: HTMLCanvasElement;
     topCanvas: HTMLCanvasElement;
+
+    constructor(props: TopCanvasProps) {
+        super(props);
+        this.state = { cached: props.cached };
+    }
+
+    componentWillReceiveProps({ cached }:TopCanvasProps) {
+        this.setState({ cached });
+    }
 
     shouldComponentUpdate() {
         return false;
@@ -25,7 +34,7 @@ export class TopCanvas extends React.Component<TopCanvasProps, {}> {
         const { width, height, onMouseMove, onClick, cached } = this.props;
         return (
             <div className="TopCanvas">
-                <canvas width={width} height={height} className="topCanvas" onMouseMove={ev => onMouseMove(ev, cached)} onClick={ev => onClick(ev, cached)} ref={
+                <canvas width={width} height={height} className="topCanvas" onMouseMove={ev => onMouseMove(ev, this.state.cached) } onClick={ev => onClick(ev, this.state.cached)} ref={
                     canvas => {
                         this.canvas = canvas;
                         createTopCanvasRenderer(canvas);
