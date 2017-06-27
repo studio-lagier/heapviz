@@ -121,3 +121,13 @@ export function drawNodes({ nodes, cacheKey }:DrawNodesPayload) {
         _drawNodes(0, nodes, sub, cacheKey);
     });
 }
+
+export function renderCache(key: string) {
+    const { draw, hit } = getCanvases(key);
+    const { cachedDrawCanvas, cachedHitCanvas } = canvasState;
+
+    cachedDrawCanvas.ctx.drawImage(draw, 0, 0);
+    cachedHitCanvas.ctx.drawImage(hit, 0, 0);
+
+    return new Observable(sub => sub.complete());
+}

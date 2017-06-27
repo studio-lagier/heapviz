@@ -3,8 +3,11 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Observable } from 'rxjs';
-import { drawNodes } from './index';
+import { drawNodes, renderCache } from './';
 import { createColorGenerator } from './colors';
+import { actions as heapActions } from '../heap/state';
+import { SUBMIT_FILTERS } from '../filters/state';
+import { getCanvases, toCacheKey } from '../canvasCache';
 
 const { concat, of } = Observable;
 
@@ -20,6 +23,7 @@ import {
     TRANSFER_COMPLETE
 } from '../worker/messages';
 export const RENDER_PROFILE = 'renderer/RENDER_PROFILE';
+export const RENDER_CACHE = 'renderer/RENDER_CACHE';
 export const RENDER_BATCH = 'renderer/RENDER_BATCH';
 export const RENDER_COMPLETE = 'renderer/RENDER_COMPLETE';
 
@@ -27,17 +31,26 @@ export const RENDER_COMPLETE = 'renderer/RENDER_COMPLETE';
 interface RendererState {
     width: number;
     height: number;
+    cache: boolean;
 }
 export default function reducer(state: RendererState, {type, payload}:FSA) {
     switch (type) {
+        case RENDER_CACHE:
+            return {
+                ...state,
+                drawing: true,
+                cached: true
+            }
         case RENDER_PROFILE:
             return {
                 ...state,
                 drawing: true,
+                cached: false
             }
         case RENDER_BATCH:
             return {
                 ...state,
+                cached: false,
                 start: payload
             }
         case RENDER_COMPLETE:
@@ -47,7 +60,7 @@ export default function reducer(state: RendererState, {type, payload}:FSA) {
             }
         default:
             const w = getWidth();
-            return state || { width: w, height: w };
+            return state || { width: w, height: w, cached: false };
     }
 }
 
@@ -88,4 +101,18 @@ export const createTextures: Epic<FSA, any> =
         .map(({ payload: { nodeTypes } }) => {
             createColorGenerator(nodeTypes);
             return texturesCreated();
+        });
+
+const { heap: { applyFilters: af } } = heapActions;
+const { renderer: { renderCache: rc } } = actions;
+export const renderIfCached: Epic<FSA, any> =
+    (action$, store) => action$
+        .ofType(SUBMIT_FILTERS)
+        .mergeMap(({ payload, payload: { filters, samples } }) => {
+            const key = toCacheKey(payload)
+            if (getCanvases(key)) {
+                renderCache(key);
+                return concat(of(rc(key)), of(renderComplete()));
+            }
+            return of(af({ filters, samples, width: getWidth() * 2 }));
         });

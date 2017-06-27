@@ -37,7 +37,7 @@ export default connect(
         return {
             ...stateProps,
             onChange: (type: string):any => (ev: ChangeEvent<HTMLInputElement>):any => {
-                const value = ev.target.value;
+                const value = parseInt(ev.target.value, 10) || '';
                 return dispatch(updateFilter({
                     value, type
                 }))

@@ -40,8 +40,8 @@ export class Renderer extends React.Component<RendererProps, {}> {
 }
 
 export default connect(
-  ({ renderer: { width, height } }) => {
-      return { width, height };
+  ({ renderer: { width, height, cached } }) => {
+      return { width, height, cached };
     },
   dispatch => {
       return {

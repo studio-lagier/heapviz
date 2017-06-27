@@ -25,6 +25,7 @@ export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
     }
 
     componentWillReceiveProps({ cached }: DrawCanvasProps) {
+        console.log('here');
         if (cached === this.props.cached) return;
         if (cached) {
             this.mountPoint.removeChild(this.drawCanvas);
@@ -36,6 +37,7 @@ export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
     }
 
     shouldComponentUpdate() {
+        console.log('there');
         return false;
     }
 

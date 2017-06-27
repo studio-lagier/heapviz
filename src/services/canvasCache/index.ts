@@ -47,11 +47,9 @@ export function setupCanvasState(setupPayload: SetupPayload) {
     Object.assign(canvasState, setupPayload)
 }
 
-interface ImageBuffer {}
-
 interface CanvasCacheNode {
-    canvas: ImageBuffer;
-    hitCanvas: ImageBuffer;
+    draw: ImageBitmap;
+    hit: ImageBitmap;
 }
 
 interface CanvasCache {
@@ -75,12 +73,12 @@ function fromCacheKey(key: string) {
 }
 
 const canvasCache: CanvasCache = {};
-export function cacheCanvases(canvas: HTMLCanvasElement, hitCanvas: HTMLCanvasElement, key: string) {
+export function cacheCanvases(draw: HTMLCanvasElement, hit: HTMLCanvasElement, key: string) {
     return Promise.all([
-        createImageBitmap(canvas),
-        createImageBitmap(hitCanvas)
-    ]).then(([canvas, hitCanvas]) => {
-        canvasCache[key] = { canvas, hitCanvas}
+        createImageBitmap(draw),
+        createImageBitmap(hit)
+    ]).then(([draw, hit]) => {
+        canvasCache[key] = { draw, hit}
     });
 }
 

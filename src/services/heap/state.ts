@@ -7,7 +7,6 @@ import { actions as messagesActions, sendMessage } from '../messages/state';
 import { SUBMIT_FILTERS, initialFilters, actions as filtersActions } from '../filters/state';
 import { Observable, ReplaySubject } from 'rxjs';
 import { initialSamples } from '../samples/state';
-import { getCanvases, toCacheKey } from '../canvasCache';
 import takeUntil from '../../utils/takeUntil';
 
 //Actions
@@ -29,11 +28,12 @@ export default function reducer(state = {
     nodesLength: 0
 }, {type, payload}: FSA) {
     switch (type) {
-        case SUBMIT_FILTERS:
+        case APPLY_FILTERS: {
             return {
                 ...state,
                 computing: true
-            };
+            }
+        }
         case PICK_NODE:
             return {
                 ...state,
@@ -90,21 +90,15 @@ function getWidth(): number {
 }
 
 //Epics
-const { heap: { applyFilters:af } } = actions;
 export const applyFilters: Epic<FSA, any> =
-    (action$, store) => action$
-        .ofType(SUBMIT_FILTERS)
-        .map(({ payload, payload: { filters, samples } }) => {
-            if (getCanvases(toCacheKey(payload))) {
-                return
-            }
-
-            return af({ filters, samples, width: getWidth() * 2 })
-        })
+    action$ => action$
+        .ofType(APPLY_FILTERS)
         .mergeMap(action => {
             worker.postMessage(action);
-            return takeUntil(workerMessages$, TRANSFER_COMPLETE);
+            return workerMessages$
+                .takeUntil(workerMessages$.ofType(TRANSFER_COMPLETE));
         });
+
 
 export const fetchNode: Epic<FSA, any> =
     action$ => action$
