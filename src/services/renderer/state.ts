@@ -64,20 +64,23 @@ export const actions = createActions({
             () => { },
             () => {return {hideMessage:true}}
         ],
-        TEXTURES_CREATED: () => {}
+        TEXTURES_CREATED: () => { },
+        RENDER_CACHE: (p: string) => p
     }
 });
 
 //Epic
 const { renderer: { renderProfile, renderBatch, renderComplete, texturesCreated } } = actions;
 export const renderNodes: Epic<FSA, any> =
-    action$ => action$
+    (action$, store) => action$
         .ofType(TRANSFER_COMPLETE)
-        .switchMap(({ payload }) => concat(
-                drawNodes(payload).map(renderBatch),
+        .switchMap(({ payload }) => {
+            const { canvasCache: {cacheKey} } = store.getState();
+            return concat(
+                drawNodes({ nodes: payload, cacheKey }).map(renderBatch),
                 of(renderComplete())
             )
-        );
+        });
 
 export const createTextures: Epic<FSA, any> =
     action$ => action$
@@ -86,13 +89,3 @@ export const createTextures: Epic<FSA, any> =
             createColorGenerator(nodeTypes);
             return texturesCreated();
         });
-
-//Needs: Draw a bunch of nodes
-// - house nodes and stage
-// - call PixiRenderer.render on stage
-// - Get canvas from renderer and append to DOM
-// - Get nodes from state
-
-// Service creates renderer, passes dom to component
-// Service handles stage, nodes, etc
-// That's it

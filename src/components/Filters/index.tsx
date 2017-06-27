@@ -5,11 +5,13 @@ import Filter from '../Filter';
 import SelectFilter from '../SelectFilter';
 import { connect } from 'react-redux';
 import { actions, FilterState } from '../../services/filters/state';
+import { SamplesState } from '../../services/samples/state';
 
 interface FiltersProps {
     onChange: Function;
     onClick: Function;
     filters: FilterState;
+    samples: SamplesState;
     nodeTypes: string[];
 }
 
@@ -27,16 +29,20 @@ export const Filters = ({ onChange, onClick, filters, nodeTypes }: FiltersProps)
 
 const { filters: { updateFilter, submitFilters } } = actions;
 export default connect(
-    ({filters, heap:{nodeTypes}}) => {return {filters, nodeTypes}},
-    dispatch => {
+    ({ filters, samples, heap: { nodeTypes } }) => { return { filters, samples, nodeTypes } },
+    null,
+    (stateProps, dispatchProps:any) => {
+        const { filters, samples } = stateProps;
+        const { dispatch } = dispatchProps;
         return {
-            onChange: (type: string) => (ev: ChangeEvent<HTMLInputElement>) => {
+            ...stateProps,
+            onChange: (type: string):any => (ev: ChangeEvent<HTMLInputElement>):any => {
                 const value = ev.target.value;
                 return dispatch(updateFilter({
                     value, type
                 }))
             },
-            onClick: (filters: FilterState) => dispatch(submitFilters(filters))
+            onClick: (filters: FilterState) => dispatch(submitFilters({ filters, samples }))
         }
     }
 )(Filters);

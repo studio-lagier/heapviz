@@ -6,6 +6,7 @@ import { WebInspector } from './web-inspector';
 import { Node, WireNode, Dispatcher, HeapProfile } from './heap-profile-parser';
 import { Observable } from 'rxjs';
 import { FilterState, initialFilters } from '../filters/state';
+import { SamplesState, initialSamples } from '../samples/state';
 
 importScripts('/pack-circles/index.js');
 declare var Module: any;
@@ -75,19 +76,10 @@ function receiveProfile({ heap, width }: ProfilePayload) {
         stats,
         nodeTypes: heapProfile.snapshot._nodeTypes
     }, undefined, {message: 'Profile has loaded'});
-
-    const children = getNodes(initialFilters, 0);
-    if (!children) return;
-
-    dispatcher.sendEvent(PROGRESS_UPDATE, 'Calculating layout. If this is taking a long time, please increase the filter');
-    const nodes = generateLayout(children, width);
-
-    transferNodes(children, nodes);
-    dispatcher.sendEvent(TRANSFER_COMPLETE);
 }
 
-function getNodes(filters: FilterState, idx: number) {
-    const nodes = heapProfile.applyFilters({ filters, idx });
+function getNodes(filters: FilterState, samples: SamplesState) {
+    const nodes = heapProfile.applyFilters({ filters, samples });
     if (nodes.length > MAX_NODES) {
         dispatcher.sendEvent(PROGRESS_UPDATE, `Current filter contains ${nodes.length} nodes, max nodes is ${MAX_NODES}. Please increase filter to reduce number of visible nodes`);
         return;
@@ -108,12 +100,13 @@ function generateLayout(children: Node[], width: number) {
 }
 
 function applyFilters(
-    { filters, idx, width }:
-        { filters: FilterState, idx: number, width: number }
+    { filters, samples, width }:
+        { filters: FilterState, samples: SamplesState, width: number }
 ) {
     //Send samples across in chunks here
-    const children = getNodes(filters, idx);
+    const children = getNodes(filters, samples);
 
+    dispatcher.sendEvent(PROGRESS_UPDATE, 'Calculating layout. If this is taking a long time, please increase the filter');
     const nodes = generateLayout(children, width);
 
     transferNodes(children, nodes);

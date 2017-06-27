@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import { Dispatcher, Node } from './index';
 import { WebInspector } from '../web-inspector';
 import { FilterState } from '../../filters/state';
+import { SamplesState } from '../../samples/state';
 
 interface RawNode {
     [key: string]: any
@@ -74,7 +75,10 @@ export class HeapProfile {
     createSamples() {
         this.samples = this.snapshot._samples.timestamps.reduce((all: Array<any>, timestamp: number, idx: number, timestamps: Array<number>) => {
             if (idx > 0) {
-                all.push(this.getSample(timestamps[idx - 1] || 0, timestamps[idx]));
+                all.push(this.getSample({
+                    start: timestamps[idx - 1] || 0,
+                    end: timestamps[idx]
+                }));
             }
             return all;
         }, []);
@@ -82,15 +86,15 @@ export class HeapProfile {
         return this.samples;
     }
 
-    getSample(startTime: number, endTime: number) {
+    getSample({ start, end }: SamplesState) {
         //Return a tree made of nodes that exist between startTime and endTime
         //Assumes find iterates in order
         const samples = this.snapshot._samples;
-        const startIdx = samples.timestamps.findIndex((timestamp: number) => timestamp >= startTime);
-        const endIdx = samples.timestamps.findIndex((timestamp: number) => timestamp > endTime) - 1;
+        const startIdx = samples.timestamps.findIndex((timestamp: number) => timestamp >= start);
+        const endIdx = samples.timestamps.findIndex((timestamp: number) => timestamp > end) - 1;
 
         //Special case startTime 0 to return all initially assigned ids
-        const startId = startTime === 0 ? 0 : samples.lastAssignedIds[startIdx];
+        const startId = start === 0 ? 0 : samples.lastAssignedIds[startIdx];
         const endId = samples.lastAssignedIds[endIdx];
 
         this._filter = { minNodeId: startId || 0, maxNodeId: endId || this.lastId() };
@@ -113,21 +117,26 @@ export class HeapProfile {
     }
 
     fetchStats() {
+        let lastTime = -1;
         return {
-            samples: this.samples.map(sample => {
-                return {
+            samples: this.samples.map((sample, i) => {
+                const stats = {
                     nodeCount: sample.length,
-                    totalSize: sample.reduce((total, node) => total + node.selfSize, 0)
+                    totalSize: sample.reduce((total, node) => total + node.selfSize, 0),
+                    startTime: lastTime + 1,
+                    endTime: this.snapshot._samples.timestamps[i]
                 };
+                lastTime = stats.endTime;
+                return stats
             }),
             totals: this.snapshot.getStatistics()
         };
     }
 
-    applyFilters({ filters, idx }: { filters: FilterState, idx: number }) {
+    applyFilters({ filters, samples }: { filters: FilterState, samples: SamplesState }) {
         const { type, ...numFilters } = filters;
 
-        return this.samples[idx].filter(
+        return this.getSample(samples).filter(
             node => {
                 if (node.type === 'synthetic') {
                     return false;

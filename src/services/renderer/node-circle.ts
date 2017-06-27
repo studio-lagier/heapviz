@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Node } from '../worker/heap-profile-parser';
-import { circle, GLState, Circle } from './circle';
+import { circle, GLState, Circle } from './canvas';
 import { color, hexToColor, padHex, modifyColor } from './colors';
 
 function createHitColor(i: number) {

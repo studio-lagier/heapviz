@@ -3,6 +3,7 @@ import { FSA } from '../../../typings/fsa';
 import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { sendMessage } from '../messages/state';
+import { SamplesState } from '../samples/state';
 
 //Actions
 export const UPDATE_FILTER = 'filters/UPDATE_FILTER';
@@ -44,11 +45,16 @@ interface UpdateFiltersPayload {
     type: string;
     value: string | number;
 }
+
+interface SubmitFiltersPayload {
+    filters: FilterState,
+    samples: SamplesState
+}
 export const actions = createActions({
     filters: {
         UPDATE_FILTER: (p: UpdateFiltersPayload) => p,
         SUBMIT_FILTERS: [
-            (p: FilterState) => p,
+            (p: SubmitFiltersPayload) => p,
             () => sendMessage('Applying filters')
         ]
     }

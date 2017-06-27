@@ -1,15 +1,15 @@
 import { colorToHex } from './colors';
-import { hitCircleMap, hitCanvasState } from './shared';
+import { hitCircleMap, canvasState } from '../canvasCache';
 import { intersects } from './node-circle';
 
 const colorBuff = new Uint8Array(3);
 
-function isMatch(color: Uint8Array, x: number, y: number) {
+function isMatch(color: Uint8Array | Uint8ClampedArray, x: number, y: number) {
     let node = hitCircleMap[colorToHex(color)];
     if(node) return intersects(node, x, y) && node;
 }
 
-function getCircleFromColor(color: Uint8Array, x: number, y: number) {
+function getCircleFromColor(color: Uint8Array | Uint8ClampedArray, x: number, y: number) {
     //First test the retrieved value
     let match = isMatch(color, x, y);
     if (match) return match;
@@ -28,9 +28,20 @@ function getCircleFromColor(color: Uint8Array, x: number, y: number) {
     }
 }
 
-//TODO: pull picker out
-export function pickCircle(x: number, y: number) {
-    const {gl} = hitCanvasState;
+function _pickCircle(x: number, y: number) {
+    const { hitCanvas: { gl } } = canvasState;
     const color = gl.readPixels(x, gl.drawingBufferHeight - y, 1, 1, gl.RGB, gl.UNSIGNED_BYTE, colorBuff);
     return getCircleFromColor(colorBuff, x, y);
+}
+
+function _pickCircleCached(x: number, y: number) {
+    const { cachedHitCanvas: {ctx} } = canvasState;
+    const { data: colorBuff } = ctx.getImageData(x, y, 1, 1);
+    return getCircleFromColor(colorBuff, x, y);
+}
+
+export function pickCircle(x: number, y: number, cached: boolean) {
+    return cached ?
+        _pickCircleCached(x, y) :
+        _pickCircle(x, y);
 }

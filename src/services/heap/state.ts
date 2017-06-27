@@ -4,7 +4,11 @@ import { Epic } from 'redux-observable';
 import { worker, workerMessages$ } from '../worker';
 import { Node } from '../worker/heap-profile-parser';
 import { actions as messagesActions, sendMessage } from '../messages/state';
-import { SUBMIT_FILTERS } from '../filters/state';
+import { SUBMIT_FILTERS, initialFilters, actions as filtersActions } from '../filters/state';
+import { Observable, ReplaySubject } from 'rxjs';
+import { initialSamples } from '../samples/state';
+import { getCanvases, toCacheKey } from '../canvasCache';
+import takeUntil from '../../utils/takeUntil';
 
 //Actions
 import {
@@ -66,7 +70,7 @@ export default function reducer(state = {
 //Action creators
 export const actions = createActions({
     heap: {
-        APPLY_FILTERS: (p: { filters: any, idx: number, width: number }) => p,
+        APPLY_FILTERS: (p: { filters: any, samples: any, width: number }) => p,
         FETCH_NODE: (p:number) => p,
         TRANSFER_PROFILE: [
             (p: { heap: ArrayBufferView }) => p,
@@ -80,7 +84,6 @@ export const actions = createActions({
     }
 })
 
-
 //TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
 function getWidth(): number {
     return Math.min(window.innerWidth, window.innerHeight);
@@ -89,13 +92,18 @@ function getWidth(): number {
 //Epics
 const { heap: { applyFilters:af } } = actions;
 export const applyFilters: Epic<FSA, any> =
-    action$ => action$
+    (action$, store) => action$
         .ofType(SUBMIT_FILTERS)
-        .map(({ payload: filters }) => af({filters, idx:0, width:getWidth() * 2}))
+        .map(({ payload, payload: { filters, samples } }) => {
+            if (getCanvases(toCacheKey(payload))) {
+                return
+            }
+
+            return af({ filters, samples, width: getWidth() * 2 })
+        })
         .mergeMap(action => {
             worker.postMessage(action);
-            return workerMessages$
-                .takeUntil(workerMessages$.ofType(TRANSFER_COMPLETE));
+            return takeUntil(workerMessages$, TRANSFER_COMPLETE);
         });
 
 export const fetchNode: Epic<FSA, any> =
@@ -113,9 +121,14 @@ export const transferProfile: Epic<FSA, any> =
         .ofType(TRANSFER_PROFILE)
         .mergeMap(action => {
             worker.postMessage(action);
-            return workerMessages$
-                .takeUntil(workerMessages$.ofType(TRANSFER_COMPLETE));
+            return takeUntil(workerMessages$, PROFILE_LOADED);
         });
+
+const { filters: { submitFilters } } = filtersActions;
+export const applyInitialFilters: Epic<FSA, any> =
+    action$ => action$
+        .ofType(PROFILE_LOADED)
+        .map(() => submitFilters({filters: initialFilters, samples: initialSamples}))
 
 const { heap: { transferComplete } } = actions;
 export const decodeNodes: Epic<FSA, any> =

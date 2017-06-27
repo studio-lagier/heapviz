@@ -20,6 +20,11 @@ export interface GLState {
     shader: any;
 }
 
+export interface TwoDState {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+}
+
 export interface Circle {
     c: number[],
     s: number[],
@@ -29,7 +34,7 @@ export interface Circle {
     l: number
 }
 
-export function init(canvas: HTMLCanvasElement, bg: number[], options?:any): GLState {
+export function initWebGL(canvas: HTMLCanvasElement, bg: number[], options?:any): GLState {
     const cache = {};
     const clear = glClear({ color: bg });
     const gl = context(canvas, Object.assign({
@@ -57,6 +62,13 @@ export function init(canvas: HTMLCanvasElement, bg: number[], options?:any): GLS
     gl.disable(gl.DEPTH_TEST);
 
     return { cache, clear, gl, shader };
+}
+
+export function init2d(canvas: HTMLCanvasElement): TwoDState {
+    return {
+        canvas,
+        ctx: canvas.getContext('2d')
+    }
 }
 
 //Radius, scale, color
@@ -120,4 +132,4 @@ export function dispose(state: GLState) {
     shader.dispose();
 }
 
-export default { init, update, dispose, circle };
+export default { initWebGL, init2d, update, dispose, circle };
