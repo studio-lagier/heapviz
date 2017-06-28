@@ -11,23 +11,23 @@ import {MouseEvent} from 'react';
 
 let outline: Circle[];
 
-export const mousemove = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cb:(p:Node) => FSA) => {
-    ifNodeExists(ev, cached, node => {
+export const mousemove = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string, cb:(p:Node) => FSA) => {
+    ifNodeExists(ev, cached, cacheKey, node => {
         updateTopCanvas(node);
         return cb(node);
     });
 }
 
-export const click = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cb:(p:Node) => FSA) => {
-    ifNodeExists(ev, cached, node => {
+export const click = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string, cb:(p:Node) => FSA) => {
+    ifNodeExists(ev, cached, cacheKey, node => {
         updateTopCanvas(node, true);
         cb(node);
     });
 }
 
-function ifNodeExists(ev: MouseEvent<HTMLCanvasElement>, cached: boolean, callback: (node:Node) => void) {
+function ifNodeExists(ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string, callback: (node:Node) => void) {
     const { offsetX, offsetY } = ev.nativeEvent;
-    const node = pickCircle(offsetX, offsetY, cached);
+    const node = pickCircle(offsetX, offsetY, cached, cacheKey);
     node && callback(node);
 }
 
@@ -80,6 +80,11 @@ export function createTopCanvasRenderer(canvas: HTMLCanvasElement) {
     canvasState.topCanvas = initWebGL(canvas, [0,0,0,0], {alpha: true}), 'topcanvas'
 }
 
+function addNodeToHitCircleMap(node: Node, color: string, cacheKey: string) {
+    hitCircleMap[cacheKey] = hitCircleMap[cacheKey] || {};
+    hitCircleMap[cacheKey][color] = node;
+}
+
 function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>, cacheKey: string) {
     const { drawCanvas, hitCanvas } = canvasState;
     let currentNode = start;
@@ -90,7 +95,7 @@ function _drawNodes(start: number, nodes: Node[], sub: Subscriber<{}>, cacheKey:
         circles.push(...createSizeCircles(node, drawCanvas));
         const { hitColor, hitCircle } = createHitCircle(node, hitCanvas);
         hitCircles.push(hitCircle);
-        hitCircleMap[hitColor] = node;
+        addNodeToHitCircleMap(node, hitColor, cacheKey);
 
         currentNode++;
         timeDiff = Date.now() - startTime;

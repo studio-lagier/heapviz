@@ -3,14 +3,14 @@ import { Node } from '../worker/heap-profile-parser';
 import { circle, GLState, Circle } from './canvas';
 import { color, hexToColor, padHex, modifyColor } from './colors';
 
-function createHitColor(i: number) {
+function createHitColor(i: number, v: number) {
     const base = i.toString(16);
     return padHex(base);
 }
 
 export function createHitCircle(node: Node, state: GLState) {
-    const { r, x, y, i } = node;
-    const hitColor = createHitColor(i);
+    const { r, x, y, i, v } = node;
+    const hitColor = createHitColor(i, v);
     const color = hexToColor(hitColor).concat(1);
     const hitCircle = createCircle(r, x, y, color, state);
     return { hitColor, hitCircle };

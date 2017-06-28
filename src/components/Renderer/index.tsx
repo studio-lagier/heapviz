@@ -14,6 +14,7 @@ interface RendererProps {
     width: number;
     height: number;
     cached: boolean;
+    cacheKey: string;
     onMouseMove: EventHandler<MouseEvent<HTMLCanvasElement>>;
     onClick: EventHandler<MouseEvent<HTMLCanvasElement>>;
 }
@@ -26,19 +27,19 @@ export class Renderer extends React.Component<RendererProps, {}> {
 
     //Fix this on width/height change
     render() {
-        const { width, height, onMouseMove, onClick, cached } = this.props;
+        const { width, height, onMouseMove, onClick, cached, cacheKey } = this.props;
         return (
             <div className="Renderer" style={{ width, height }}>
                 <DrawCanvas width={2 * width} height={2 * height} cached={cached}/>
-                <TopCanvas width={2 * width} height={2 * height} onMouseMove={onMouseMove} onClick={onClick} cached={cached} />
+                <TopCanvas width={2 * width} height={2 * height} onMouseMove={onMouseMove} onClick={onClick} cached={cached} cacheKey={cacheKey}/>
             </div>
         );
     }
 }
 
 export default connect(
-  ({ renderer: { width, height, cached } }) => {
-      return { width, height, cached };
+    ({ renderer: { width, height, cached }, canvasCache: { cacheKey } }) => {
+      return { width, height, cached, cacheKey };
     },
     null,
     (stateProps, dispatchProps:any) => {
@@ -46,8 +47,10 @@ export default connect(
         const { cached } = stateProps;
         return {
             ...stateProps,
-            onMouseMove: (ev:MouseEvent<HTMLCanvasElement>, cached: boolean) => mousemove(ev, cached, node => dispatch(pickNode(node))),
-            onClick: (ev:MouseEvent<HTMLCanvasElement>, cached: boolean) => click(ev, cached, node => dispatch(fetchNode(node.d)))
+            onMouseMove: (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string) =>
+                mousemove(ev, cached, cacheKey, node => dispatch(pickNode(node))),
+            onClick: (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string) =>
+                click(ev, cached, cacheKey, node => dispatch(fetchNode(node.d)))
         }
     }
 )(Renderer);

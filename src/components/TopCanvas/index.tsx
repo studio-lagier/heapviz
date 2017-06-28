@@ -10,20 +10,28 @@ interface TopCanvasProps {
     onMouseMove: Function;
     onClick: Function;
     cached: boolean;
+    cacheKey: string;
 }
 
-export class TopCanvas extends React.Component<TopCanvasProps, {cached: boolean}> {
+interface TopCanvasState {
+    cached: boolean;
+    cacheKey: string;
+}
+export class TopCanvas extends React.Component<TopCanvasProps, TopCanvasState> {
 
     canvas: HTMLCanvasElement;
     topCanvas: HTMLCanvasElement;
 
     constructor(props: TopCanvasProps) {
         super(props);
-        this.state = { cached: props.cached };
+        this.state = {
+            cached: props.cached,
+            cacheKey: props.cacheKey
+        };
     }
 
-    componentWillReceiveProps({ cached }:TopCanvasProps) {
-        this.setState({ cached });
+    componentWillReceiveProps({ cached, cacheKey }:TopCanvasProps) {
+        this.setState({ cached, cacheKey });
     }
 
     shouldComponentUpdate() {
@@ -34,7 +42,7 @@ export class TopCanvas extends React.Component<TopCanvasProps, {cached: boolean}
         const { width, height, onMouseMove, onClick, cached } = this.props;
         return (
             <div className="TopCanvas">
-                <canvas width={width} height={height} className="topCanvas" onMouseMove={ev => onMouseMove(ev, this.state.cached) } onClick={ev => onClick(ev, this.state.cached)} ref={
+                <canvas width={width} height={height} className="topCanvas" onMouseMove={ev => onMouseMove(ev, this.state.cached, this.state.cacheKey) } onClick={ev => onClick(ev, this.state.cached, this.state.cacheKey)} ref={
                     canvas => {
                         this.canvas = canvas;
                         createTopCanvasRenderer(canvas);

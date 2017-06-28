@@ -4,7 +4,9 @@ import { FilterState } from '../filters/state';
 import { SamplesState } from '../samples/state';
 
 interface HitCircleMap {
-    [key:string] : Node
+    [key: string]: {
+        [key: string]: Node;
+    }
 }
 
 export var circles: Circle[] = [];
