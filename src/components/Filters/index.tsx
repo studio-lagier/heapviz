@@ -36,8 +36,12 @@ export default connect(
         const { dispatch } = dispatchProps;
         return {
             ...stateProps,
-            onChange: (type: string):any => (ev: ChangeEvent<HTMLInputElement>):any => {
-                const value = parseInt(ev.target.value, 10) || '';
+            onChange: (type: string): any => (ev: ChangeEvent<HTMLInputElement>): any => {
+                //Special case for type select
+                const value = type === 'type' ?
+                    ev.target.value :
+                    parseInt(ev.target.value, 10) || '';
+
                 return dispatch(updateFilter({
                     value, type
                 }))
