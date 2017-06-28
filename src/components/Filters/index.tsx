@@ -37,7 +37,8 @@ export default connect(
         return {
             ...stateProps,
             onChange: (type: string): any => (ev: ChangeEvent<HTMLInputElement>): any => {
-                //Special case for type select
+                //Special case for type select because it comes
+                // through as a string
                 const value = type === 'type' ?
                     ev.target.value :
                     parseInt(ev.target.value, 10) || '';
