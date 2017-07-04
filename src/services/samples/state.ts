@@ -4,6 +4,7 @@ import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 
 //Actions
+import { PROFILE_LOADED } from '../worker/messages';
 export const UPDATE_START = 'samples/UPDATE_START';
 export const UPDATE_END = 'samples/UPDATE_END';
 
@@ -32,6 +33,11 @@ export default function reducer(state = initialSamples, action: FSA) {
                 ...state,
                 end: payload
             };
+        case PROFILE_LOADED:
+            return {
+                ...state,
+                stats: payload.stats
+            }
         default:
             return state;
     }

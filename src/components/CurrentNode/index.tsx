@@ -37,7 +37,10 @@ export const CurrentNode = ({ node }: CurrentNodeProps) => {
                 <Stats stats={stats} />
             </div>
             <div className="edges">
-                <Edges edges={node.edges} />
+                <Edges edges={node.edges} title='Edges' />
+            </div>
+            <div className="retainers">
+                <Edges edges={node.retainers} title='Retainers' />
             </div>
         </div>
     )

@@ -13,6 +13,7 @@ interface Edge {
 
 interface EdgesProps {
     edges: any;
+    title: string;
 }
 
 interface Stats {
@@ -39,17 +40,11 @@ function edgeToStats(edge:Edge) {
     }
 }
 
-export const Edges = ({ edges }: EdgesProps) => {
-    const renderEdges = edges.sort((a: Edge, b: Edge) => {
-        const { node: { retainedSize: aSize } } = a;
-        const { node: { retainedSize: bSize } } = b;
-        if (aSize > bSize) return -1
-        if (bSize > aSize) return 1;
-        return 0;
-    }).slice(0, 10).map(edgeToStats);
+export const Edges = ({ edges, title }: EdgesProps) => {
+    const renderEdges = edges.slice(0, 10).map(edgeToStats);
     return (
         <div className="Edges">
-            <strong>Edges:</strong>
+            <strong>{title}:</strong>
             {renderEdges.map((edge: Stats) => <Stats key={edge.id} stats={edge} />)}
         </div>
     )

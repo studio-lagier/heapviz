@@ -59,9 +59,18 @@ export class HeapProfile {
 
     createEdges(node: RawNode) {
         this._node.nodeIndex = node.itemIndex;
+        return this.createEdgeList(this._node.edges(), 'edge');
+    }
+
+    createRetainers(node: RawNode) {
+        this._node.nodeIndex = node.itemIndex;
+        return this.createEdgeList(this._node.retainers(), 'retainer');
+    }
+
+    createEdgeList(iter: any, key: string) {
         const edges = [];
-        for (let iter = this._node.edges(); iter.hasNext(); iter.next()) {
-            edges.push(iter.edge.serialize());
+        for (iter; iter.hasNext(); iter.next()) {
+            edges.push(iter[key].serialize());
         }
 
         return edges.sort((a, b) => {
@@ -113,6 +122,7 @@ export class HeapProfile {
     fetchNode(nodeIdx: number) {
         const node = this.createNode(nodeIdx);
         node.edges = this.createEdges(node);
+        node.retainers = this.createRetainers(node);
         return node;
     }
 

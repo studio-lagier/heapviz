@@ -50,10 +50,10 @@ export default function reducer(state = {
                 currentNode: payload.node
             };
         case PROFILE_LOADED:
-            const { stats, nodeTypes } = payload;
+            const { nodeTypes } = payload;
             return {
                 ...state,
-                stats, nodeTypes
+                nodeTypes
             }
         case TRANSFER_COMPLETE:
             return {

@@ -89,9 +89,7 @@ function getNodes(filters: FilterState, samples: SamplesState) {
 }
 
 function generateLayout(children: Node[], width: number) {
-    let root;
-
-    root = new Module.Hierarchy({
+    const root = new Module.Hierarchy({
         size: [width, width],
         padding: 1.5
     }, { value: 0, children: children.map(node => node.toSmall())});
