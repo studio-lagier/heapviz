@@ -78,8 +78,8 @@ function receiveProfile({ heap, width }: ProfilePayload) {
     }, undefined, {message: 'Profile has loaded'});
 }
 
-function getNodes(filters: FilterState, samples: SamplesState) {
-    const nodes = heapProfile.applyFilters({ filters, samples });
+function getNodes(filters: FilterState, start: number, end: number) {
+    const nodes = heapProfile.applyFilters({ filters, start, end });
     if (nodes.length > MAX_NODES) {
         dispatcher.sendEvent(PROGRESS_UPDATE, `Current filter contains ${nodes.length} nodes, max nodes is ${MAX_NODES}. Please increase filter to reduce number of visible nodes`);
         return;
@@ -88,24 +88,29 @@ function getNodes(filters: FilterState, samples: SamplesState) {
     return nodes;
 }
 
-function generateLayout(children: Node[], width: number) {
+function generateLayout(children: Node[], size: number) {
     const root = new Module.Hierarchy({
-        size: [width, width],
+        size: [2 * size, 2 * size],
         padding: 1.5
     }, { value: 0, children: children.map(node => node.toSmall())});
 
     return root.pack().leaves();
 }
 
+interface ApplyFiltersPayload {
+    filters: FilterState,
+    start: number,
+    end: number,
+    size: number
+}
 function applyFilters(
-    { filters, samples, width }:
-        { filters: FilterState, samples: SamplesState, width: number }
+    { filters, start, end, size }: ApplyFiltersPayload
 ) {
     //Send samples across in chunks here
-    const children = getNodes(filters, samples);
+    const children = getNodes(filters, start, end);
 
     dispatcher.sendEvent(PROGRESS_UPDATE, 'Calculating layout. If this is taking a long time, please increase the filter');
-    const nodes = generateLayout(children, width);
+    const nodes = generateLayout(children, size);
 
     transferNodes(children, nodes);
     dispatcher.sendEvent(TRANSFER_COMPLETE);

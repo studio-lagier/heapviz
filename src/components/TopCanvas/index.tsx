@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { createTopCanvasRenderer, destroyRenderer } from '../../services/renderer';
 
 interface TopCanvasProps {
-    width: number;
-    height: number;
+    size: number;
     onMouseMove: Function;
     onClick: Function;
     cached: boolean;
@@ -20,7 +19,6 @@ interface TopCanvasState {
 export class TopCanvas extends React.Component<TopCanvasProps, TopCanvasState> {
 
     canvas: HTMLCanvasElement;
-    topCanvas: HTMLCanvasElement;
 
     constructor(props: TopCanvasProps) {
         super(props);
@@ -30,8 +28,12 @@ export class TopCanvas extends React.Component<TopCanvasProps, TopCanvasState> {
         };
     }
 
-    componentWillReceiveProps({ cached, cacheKey }:TopCanvasProps) {
+    componentWillReceiveProps(props: TopCanvasProps) {
+        const { cached, cacheKey, size } = props;
         this.setState({ cached, cacheKey });
+        this.canvas.width = size;
+        this.canvas.height = size;
+        createTopCanvasRenderer(this.canvas);
     }
 
     shouldComponentUpdate() {
@@ -39,10 +41,10 @@ export class TopCanvas extends React.Component<TopCanvasProps, TopCanvasState> {
     }
 
     render() {
-        const { width, height, onMouseMove, onClick, cached } = this.props;
+        const { onMouseMove, onClick, cached, size } = this.props;
         return (
             <div className="TopCanvas">
-                <canvas width={width} height={height} className="topCanvas" onMouseMove={ev => onMouseMove(ev, this.state.cached, this.state.cacheKey) } onClick={ev => onClick(ev, this.state.cached, this.state.cacheKey)} ref={
+                <canvas width={size} height={size} className="topCanvas" onMouseMove={ev => onMouseMove(ev, this.state.cached, this.state.cacheKey) } onClick={ev => onClick(ev, this.state.cached, this.state.cacheKey)} ref={
                     canvas => {
                         this.canvas = canvas;
                         createTopCanvasRenderer(canvas);

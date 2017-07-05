@@ -59,7 +59,7 @@ export const actions = createActions({
 //Epics
 const { file: { fileLoaded } } = actions;
 export const loadFile: Epic<FSA, any> =
-    action$ => action$
+    (action$, store) => action$
         .ofType(FETCH_LOCAL_FILE)
         .mergeMap(({ payload }) => fromPromise(
             fetch(`/profiles/${payload}`)
@@ -69,7 +69,7 @@ export const loadFile: Epic<FSA, any> =
                 of(fileLoaded(buff)),
                 of(transferProfile({
                     heap: buff,
-                    width: getWidth() * 2
+                    width: store.getState().renderer.size * 2
                 }))
             )
     )
@@ -78,8 +78,3 @@ export const onFileLoaded: Epic<FSA, any> =
     action$ => action$
         .ofType(FILE_LOADED)
         .map(() => push('/viz'));
-
-//TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
-function getWidth(): number {
-    return Math.min(window.innerWidth, window.innerHeight);
-}

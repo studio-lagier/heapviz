@@ -84,10 +84,10 @@ export class HeapProfile {
     createSamples() {
         this.samples = this.snapshot._samples.timestamps.reduce((all: Array<any>, timestamp: number, idx: number, timestamps: Array<number>) => {
             if (idx > 0) {
-                all.push(this.getSample({
-                    start: timestamps[idx - 1] || 0,
-                    end: timestamps[idx]
-                }));
+                all.push(this.getSample(
+                    timestamps[idx - 1] || 0,
+                    timestamps[idx]
+                ));
             }
             return all;
         }, []);
@@ -95,7 +95,7 @@ export class HeapProfile {
         return this.samples;
     }
 
-    getSample({ start, end }: SamplesState) {
+    getSample(start: number, end: number) {
         //Return a tree made of nodes that exist between startTime and endTime
         //Assumes find iterates in order
         const samples = this.snapshot._samples;
@@ -143,10 +143,10 @@ export class HeapProfile {
         };
     }
 
-    applyFilters({ filters, samples }: { filters: FilterState, samples: SamplesState }) {
+    applyFilters({ filters, start, end }: { filters: FilterState, start: number, end: number }) {
         const { type, ...numFilters } = filters;
 
-        return this.getSample(samples).filter(
+        return this.getSample(start, end).filter(
             node => {
                 if (node.type === 'synthetic') {
                     return false;

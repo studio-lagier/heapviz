@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { toCacheKey } from './';
 import { initialFilters, SUBMIT_FILTERS } from '../filters/state';
 import { initialSamples } from '../samples/state';
+import { RESIZE_RENDERER } from '../renderer/state';
 
 //Actions
 export const INITIALIZE_CACHE = 'canvasCache/INITIALIZE_CACHE';
@@ -20,10 +21,7 @@ interface CacheState {
 const initialState: CacheState = {
     initialized: false,
     hasCachedCanvases: false,
-    cacheKey: toCacheKey({
-        filters: initialFilters,
-        samples: initialSamples
-    })
+    cacheKey: null
 }
 
 export default function reducer(state = initialState, action: FSA) {

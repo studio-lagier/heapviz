@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { createCanvases, destroyRenderer } from '../../services/renderer';
 
 interface DrawCanvasProps {
-    width: number;
-    height: number;
     cached: boolean;
 }
 
+//We use 5000 as our canvas size because it's large - we don't want to have to deal with a user resizing their window above our largest size.
+const CANVAS_SIZE = 5000;
 export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
 
     drawCanvas: HTMLCanvasElement;
@@ -18,8 +18,8 @@ export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
 
     constructor(props:DrawCanvasProps) {
         super(props);
-        const { width, height } = props;
-        const { drawCanvas, cachedDrawCanvas } = createCanvases(width, height);
+        //We use 5000 because we want
+        const { drawCanvas, cachedDrawCanvas } = createCanvases(CANVAS_SIZE);
         this.drawCanvas = drawCanvas.gl.canvas;
         this.cachedDrawCanvas = cachedDrawCanvas.canvas;
     }
@@ -35,6 +35,8 @@ export class DrawCanvas extends React.Component<DrawCanvasProps, {}> {
             this.mountPoint.removeChild(this.cachedDrawCanvas);
             this.mountPoint.appendChild(this.drawCanvas);
         }
+
+
     }
 
     shouldComponentUpdate() {

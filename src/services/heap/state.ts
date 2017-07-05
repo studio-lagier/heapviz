@@ -84,11 +84,6 @@ export const actions = createActions({
     }
 })
 
-//TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
-function getWidth(): number {
-    return Math.min(window.innerWidth, window.innerHeight);
-}
-
 //Epics
 export const applyFilters: Epic<FSA, any> =
     action$ => action$
@@ -119,10 +114,11 @@ export const transferProfile: Epic<FSA, any> =
         });
 
 const { filters: { submitFilters } } = filtersActions;
+const { start, end } = initialSamples;
 export const applyInitialFilters: Epic<FSA, any> =
-    action$ => action$
+    (action$, store) => action$
         .ofType(PROFILE_LOADED)
-        .map(() => submitFilters({filters: initialFilters, samples: initialSamples}))
+        .map(() => submitFilters({filters: initialFilters, start, end, size: store.getState().renderer.size}))
 
 const { heap: { transferComplete } } = actions;
 export const decodeNodes: Epic<FSA, any> =

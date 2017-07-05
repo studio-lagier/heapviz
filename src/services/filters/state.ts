@@ -48,7 +48,9 @@ interface UpdateFiltersPayload {
 
 interface SubmitFiltersPayload {
     filters: FilterState,
-    samples: SamplesState
+    start: number,
+    end: number,
+    size: number
 }
 export const actions = createActions({
     filters: {

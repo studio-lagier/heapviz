@@ -11,7 +11,8 @@ interface FiltersProps {
     onChange: Function;
     onClick: Function;
     filters: FilterState;
-    samples: SamplesState;
+    start: number,
+    end: number,
     nodeTypes: string[];
 }
 
@@ -29,10 +30,10 @@ export const Filters = ({ onChange, onClick, filters, nodeTypes }: FiltersProps)
 
 const { filters: { updateFilter, submitFilters } } = actions;
 export default connect(
-    ({ filters, samples, heap: { nodeTypes } }) => { return { filters, samples, nodeTypes } },
+    ({ filters, samples: { start, end }, heap: { nodeTypes }, renderer: { size } }) => { return { filters, start, end, nodeTypes, size } },
     null,
     (stateProps, dispatchProps:any) => {
-        const { filters, samples } = stateProps;
+        const { filters, start, end, size } = stateProps;
         const { dispatch } = dispatchProps;
         return {
             ...stateProps,
@@ -47,7 +48,7 @@ export default connect(
                     value, type
                 }))
             },
-            onClick: (filters: FilterState) => dispatch(submitFilters({ filters, samples }))
+            onClick: (filters: FilterState) => dispatch(submitFilters({ filters, start, end, size }))
         }
     }
 )(Filters);

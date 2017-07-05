@@ -59,18 +59,22 @@ interface CanvasCache {
 }
 
 export interface ToCacheKeyPayload {
-    filters: FilterState,
-    samples: SamplesState
+    filters: FilterState;
+    start: number;
+    end: number;
+    size: number;
 }
-export function toCacheKey({ filters, samples }: ToCacheKeyPayload) {
-    return `${JSON.stringify(filters)}|${JSON.stringify(samples)}`;
+export function toCacheKey({ filters, start, end, size }: ToCacheKeyPayload) {
+    return `${JSON.stringify(filters)}|${start}|${end}|${size}`;
 }
 
 function fromCacheKey(key: string) {
     const tokens = key.split('|');
     return {
         filters: JSON.parse(tokens[0]),
-        samples: JSON.parse(tokens[1])
+        start: tokens[1],
+        end: tokens[2],
+        size: tokens[3]
     }
 }
 

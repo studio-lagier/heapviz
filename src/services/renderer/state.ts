@@ -26,14 +26,22 @@ export const RENDER_PROFILE = 'renderer/RENDER_PROFILE';
 export const RENDER_CACHE = 'renderer/RENDER_CACHE';
 export const RENDER_BATCH = 'renderer/RENDER_BATCH';
 export const RENDER_COMPLETE = 'renderer/RENDER_COMPLETE';
+export const RESIZE_RENDERER = 'renderer/RESIZE_RENDERER';
 
 //Reducer
 interface RendererState {
-    width: number;
-    height: number;
-    cache: boolean;
+    size: number;
+    cached: boolean;
+    drawing: boolean;
 }
-export default function reducer(state: RendererState, {type, payload}:FSA) {
+
+const initialState: RendererState = {
+    size: 0,
+    cached: false,
+    drawing: false
+}
+
+export default function reducer(state: RendererState = initialState, {type, payload}:FSA) {
     switch (type) {
         case RENDER_CACHE:
             return {
@@ -58,16 +66,21 @@ export default function reducer(state: RendererState, {type, payload}:FSA) {
                 ...state,
                 drawing: false
             }
+        case SUBMIT_FILTERS:
+            return {
+                ...state,
+                size: payload.size
+            }
+        case RESIZE_RENDERER:
+            return {
+                ...state,
+                size: payload
+            }
         default:
-            const w = getWidth();
-            return state || { width: w, height: w, cached: false };
+            return state;
     }
 }
 
-//TODO: Move this somewhere better - maybe get this in the store as a part of the app component?
-function getWidth(): number {
-    return Math.min(window.innerWidth, window.innerHeight);
-}
 //Action creators
 export const actions = createActions({
     renderer: {
@@ -78,7 +91,8 @@ export const actions = createActions({
             () => {return {hideMessage:true}}
         ],
         TEXTURES_CREATED: () => { },
-        RENDER_CACHE: (p: string) => p
+        RENDER_CACHE: (p: string) => p,
+        RESIZE_RENDERER: (p: number) => p
     }
 });
 
@@ -108,11 +122,11 @@ const { renderer: { renderCache: rc } } = actions;
 export const renderIfCached: Epic<FSA, any> =
     (action$, store) => action$
         .ofType(SUBMIT_FILTERS)
-        .mergeMap(({ payload, payload: { filters, samples } }) => {
+        .mergeMap(({ payload }) => {
             const key = toCacheKey(payload)
             if (getCanvases(key)) {
                 renderCache(key);
                 return concat(of(rc(key)), of(renderComplete()));
             }
-            return of(af({ filters, samples, width: getWidth() * 2 }));
+            return of(af(payload));
         });

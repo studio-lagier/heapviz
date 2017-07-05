@@ -11,10 +11,10 @@ import {MouseEvent} from 'react';
 
 let outline: Circle[];
 
-export const mousemove = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string, cb:(p:Node) => FSA) => {
+export const mousemove = (ev: MouseEvent<HTMLCanvasElement>, cached: boolean, cacheKey: string, cb: (p: Node) => FSA) => {
     ifNodeExists(ev, cached, cacheKey, node => {
         updateTopCanvas(node);
-        return cb(node);
+        cb(node);
     });
 }
 
@@ -53,10 +53,10 @@ export function destroyRenderer() {
     clearState();
 }
 
-export function createCanvases(width: number, height: number) {
+export function createCanvases(size: number) {
     const dc = document.createElement('canvas');
-    dc.width = width;
-    dc.height = height;
+    dc.width = size;
+    dc.height = size;
 
     const cdc = <HTMLCanvasElement>dc.cloneNode();
     const hc = <HTMLCanvasElement>dc.cloneNode();
@@ -77,7 +77,8 @@ export function createCanvases(width: number, height: number) {
 
 export function createTopCanvasRenderer(canvas: HTMLCanvasElement) {
     if (!canvas) return;
-    canvasState.topCanvas = initWebGL(canvas, [0,0,0,0], {alpha: true}), 'topcanvas'
+    canvasState.topCanvas = initWebGL(canvas, [0, 0, 0, 0], { alpha: true });
+    outline = null;
 }
 
 function addNodeToHitCircleMap(node: Node, color: string, cacheKey: string) {
