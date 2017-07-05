@@ -21,11 +21,14 @@ import {
     TRANSFER_COMPLETE
 } from '../worker/messages';
 const PICK_NODE = 'heap/PICK_NODE';
+//Dumb but this avoids circular reference and saves
+// needing to make another epic
+const _RENDER_CACHE = 'renderer/RENDER_CACHE';
 
 //Reducer
 export default function reducer(state = {
     message: 'Idle',
-    nodesLength: 0
+    nodesLength: 0,
 }, {type, payload}: FSA) {
     switch (type) {
         case APPLY_FILTERS: {
@@ -53,7 +56,12 @@ export default function reducer(state = {
             const { nodeTypes } = payload;
             return {
                 ...state,
-                nodeTypes
+                nodeTypes,
+            }
+        case _RENDER_CACHE:
+            return {
+                ...state,
+                computing: false
             }
         case TRANSFER_COMPLETE:
             return {

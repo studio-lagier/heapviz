@@ -83,14 +83,13 @@ export class HeapProfile {
     //Associate a range of nodes with a particular sample to allow for easy segmentation
     createSamples() {
         this.samples = this.snapshot._samples.timestamps.reduce((all: Array<any>, timestamp: number, idx: number, timestamps: Array<number>) => {
-            if (idx > 0) {
-                all.push(this.getSample(
-                    timestamps[idx - 1] || 0,
-                    timestamps[idx]
-                ));
-            }
+            if (idx === 0 || idx === timestamps.length - 1) return all;
+            all.push(this.getSample(
+                idx,
+                idx
+            ));
             return all;
-        }, []);
+        }, [this.getSample(0, 0)]);
 
         return this.samples;
     }
@@ -99,12 +98,10 @@ export class HeapProfile {
         //Return a tree made of nodes that exist between startTime and endTime
         //Assumes find iterates in order
         const samples = this.snapshot._samples;
-        const startIdx = samples.timestamps.findIndex((timestamp: number) => timestamp >= start);
-        const endIdx = samples.timestamps.findIndex((timestamp: number) => timestamp > end) - 1;
 
         //Special case startTime 0 to return all initially assigned ids
-        const startId = start === 0 ? 0 : samples.lastAssignedIds[startIdx];
-        const endId = samples.lastAssignedIds[endIdx];
+        const startId = start === 0 ? 0 : samples.lastAssignedIds[start];
+        const endId = samples.lastAssignedIds[end + 1];
 
         this._filter = { minNodeId: startId || 0, maxNodeId: endId || this.lastId() };
         return this.nodes.filter(this.inSample.bind(this));

@@ -58,6 +58,7 @@ export default function reducer(state: RendererState = initialState, {type, payl
         case RENDER_BATCH:
             return {
                 ...state,
+                drawing: true,
                 cached: false,
                 start: payload
             }
@@ -104,6 +105,7 @@ export const renderNodes: Epic<FSA, any> =
         .switchMap(({ payload }) => {
             const { canvasCache: {cacheKey} } = store.getState();
             return concat(
+                of(renderProfile()),
                 drawNodes({ nodes: payload, cacheKey }).map(renderBatch),
                 of(renderComplete())
             )

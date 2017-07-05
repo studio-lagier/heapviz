@@ -78,7 +78,7 @@ function fromCacheKey(key: string) {
     }
 }
 
-const canvasCache: CanvasCache = {};
+let canvasCache: CanvasCache = {};
 export function cacheCanvases(draw: HTMLCanvasElement, hit: HTMLCanvasElement, key: string) {
     return Promise.all([
         createImageBitmap(draw),
@@ -90,4 +90,8 @@ export function cacheCanvases(draw: HTMLCanvasElement, hit: HTMLCanvasElement, k
 
 export function getCanvases(key: string) {
     return canvasCache[key];
+}
+
+export function resetCache() {
+    canvasCache = {};
 }
