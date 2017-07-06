@@ -56,9 +56,9 @@ function loadStaticFile(size: string) {
     case 'small':
       return fetchLocalFile('Heap-20161109T212710.heaptimeline');
     case 'medium':
-      return fetchLocalFile('Heap-20161110T224559.heaptimeline');
-    case 'large':
       return fetchLocalFile('Heap-20170129T011211.heaptimeline');
+    case 'large':
+      return fetchLocalFile('Heap-20161110T224559.heaptimeline');
   }
 }
 
