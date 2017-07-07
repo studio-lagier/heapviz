@@ -14,6 +14,7 @@ export const StatsWindow = ({ stats, length }: StatsWindowProps) => {
     renderStats["Number of nodes"] = length;
     return (
         <div className="StatsWindow">
+            <strong>Profile stats</strong>
             <Stats stats={renderStats} />
         </div>
     )

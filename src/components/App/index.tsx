@@ -49,18 +49,23 @@ export const App = ({
           </div>
         </div>
 
+        {stats ? <SampleSelector /> : null}
+
+        <div className="left-rail">
+          {!computing
+            ? <Filters />
+            : null}
+
+          {stats ? <StatsWindow stats={stats} length={nodesLength} /> : null}
+        </div>
+
+        <div className="main-window">
         {!computing
           ? <Renderer />
           : null}
+        </div>
 
-        {!computing
-          ? <Filters />
-          : null}
-
-        {stats ? <StatsWindow stats={stats} length={nodesLength} /> : null}
-        {stats ? <SampleSelector /> : null}
-
-        <div className="right-stats">
+        <div className="right-rail">
           {hoverNode ? <HoverNode node={hoverNode} /> : null}
           {currentNode ? <CurrentNode node={currentNode} /> : null}
         </div>

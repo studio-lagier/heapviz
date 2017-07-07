@@ -2,6 +2,8 @@
   position: relative;
   width: 100%;
   height: 100vh;
+  display: grid;
+  grid-template-columns: 275px auto 275px;
 }
 
 .message {
@@ -29,8 +31,21 @@
   }
 }
 
-.right-stats {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+.left-rail {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  padding: 20px;
+  z-index: 1;
+}
+
+.main-window {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.right-rail {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  padding: 20px;
+  z-index: 1;
 }
