@@ -10,6 +10,9 @@ const { heap: { transferProfile } } = heapActions;
 
 //Actions
 export const FETCH_LOCAL_FILE = 'file/FETCH_LOCAL_FILE';
+export const DRAG_OVER = 'file/DRAG_OVER';
+export const DRAG_OUT = 'file/DRAG_OUT';
+export const LOAD_FILE = 'file/LOAD_FILE';
 export const FILE_LOADED = 'file/FILE_LOADED';
 
 //Reducer
@@ -17,18 +20,19 @@ interface FileState {
     hasFile: boolean;
     fetching: boolean;
     fileName: string;
-    fileBuffer?: ArrayBuffer;
+    dragging: boolean;
 }
 
 const initialState: FileState = {
     hasFile: false,
     fetching: false,
     fileName: '',
-    fileBuffer: null
+    dragging: false,
 }
 
 export default function reducer(state = initialState, action: FSA) {
     switch (action.type) {
+        case LOAD_FILE:
         case FETCH_LOCAL_FILE:
             return {
                 ...state,
@@ -39,10 +43,19 @@ export default function reducer(state = initialState, action: FSA) {
             return {
                 ...state,
                 fetching: false,
-                fileBuffer: action.payload,
+                dragging: false,
                 hasFile: true
             };
-
+        case DRAG_OVER:
+            return {
+                ...state,
+                dragging: true
+            }
+        case DRAG_OUT:
+            return {
+                ...state,
+                dragging: false
+            }
         default:
             return state;
     }
@@ -52,7 +65,10 @@ export default function reducer(state = initialState, action: FSA) {
 export const actions = createActions({
     file: {
         FETCH_LOCAL_FILE: (p: string) => p,
-        FILE_LOADED: (p: ArrayBuffer) => p
+        FILE_LOADED: (p: ArrayBuffer) => p,
+        DRAG_OVER: () => { },
+        DRAG_OUT: () => { },
+        LOAD_FILE: (p:string) => p
     }
 })
 
