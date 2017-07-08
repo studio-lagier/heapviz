@@ -1,13 +1,14 @@
 import * as React from 'react';
 import './CurrentNode.pcss';
 import Stats from '../Stats';
-import Edges from '../Edges';
 import { Node } from '../../services/worker/heap-profile-parser';
 import * as filesize from 'filesize';
-
+import { FSA } from '../../../typings/fsa';
 
 interface CurrentNodeProps {
     node: any;
+    showEdges: () => FSA;
+    showRetainers: () => FSA;
 }
 
 interface Stats {
@@ -28,7 +29,7 @@ function nodeToStats(node: Node): Stats {
     }
 }
 
-export const CurrentNode = ({ node }: CurrentNodeProps) => {
+export const CurrentNode = ({ node, showEdges, showRetainers }: CurrentNodeProps) => {
     const stats = nodeToStats(node);
     return (
         <div className="CurrentNode">
@@ -36,14 +37,16 @@ export const CurrentNode = ({ node }: CurrentNodeProps) => {
             <div className="stats">
                 <Stats stats={stats} />
             </div>
-            <button>Edges</button>
-            <button>Retainers</button>
-            <div className="edges">
-                <Edges edges={node.edges} title='Edges' />
-            </div>
-            <div className="retainers">
-                <Edges edges={node.retainers} title='Retainers' />
-            </div>
+            {
+                node.edges.length ?
+                    <button onClick={showEdges}>Edges</button> :
+                    null
+            }
+            {
+                node.retainers.length ?
+                    <button onClick={showRetainers}>Retainers</button> :
+                    null
+            }
         </div>
     )
 };

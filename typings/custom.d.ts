@@ -28,3 +28,8 @@ declare module 'raw!*' {
 }
 
 declare var $: any
+
+declare module 'react-table' {
+  const content: any;
+  export default content;
+}

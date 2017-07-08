@@ -11,20 +11,16 @@ interface SampleProps {
     selected: boolean;
 }
 
-export class Sample extends React.Component<SampleProps, {}> {
-    getHeight(sample: iSample, total: number, maxHeight: number) {
-        return Math.ceil((sample.totalSize / total) * maxHeight);
-    }
-    render() {
-        const { sample, total, maxHeight, width, left, selected } = this.props;
-        return (
-            <div className={`Sample ${selected ? 'selected' : ''}`} style={{
-                height: this.getHeight(sample, total, maxHeight),
-                width,
-                left
-            }}/>
-        )
-    }
-};
+function getHeight(sample: iSample, total: number, maxHeight: number) {
+    return Math.ceil((sample.totalSize / total) * maxHeight);
+}
+
+export const Sample = ({ sample, total, maxHeight, width, left, selected }: SampleProps) => (
+    <div className={`Sample ${selected ? 'selected' : ''}`} style={{
+        height: getHeight(sample, total, maxHeight),
+        width,
+        left
+    }} />
+);
 
 export default Sample;

@@ -8,6 +8,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, push } from 'react-router-redux';
 import FileUploadWindow from './components/FileUploadWindow';
 import App from './components/App';
+import ModalOutlet from './components/ModalOutlet';
 
 
 ReactDOM.render(
@@ -16,6 +17,7 @@ ReactDOM.render(
       <div className="main">
         <Route exact path="/" component={FileUploadWindow as any} />
         <Route path="/viz" component={App as any} />
+        <ModalOutlet />
       </div>
     </ConnectedRouter>
   </Provider>,

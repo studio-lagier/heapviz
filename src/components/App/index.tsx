@@ -12,6 +12,10 @@ import CurrentNode from "../CurrentNode";
 import Filters from "../Filters";
 import { Redirect } from "react-router-dom";
 import { Node } from "../../services/worker/heap-profile-parser";
+import { FSA } from '../../../typings/fsa';
+import { actions } from '../../services/modal/state';
+
+const { modal: { showModal } } = actions;
 
 interface AppProps {
   message: string;
@@ -23,6 +27,8 @@ interface AppProps {
   hoverNode: Node;
   currentNode: Node;
   nodesLength: number;
+  showEdges: () => FSA;
+  showRetainers: () => FSA;
 }
 
 export const App = ({
@@ -34,7 +40,9 @@ export const App = ({
       stats,
       nodesLength,
       hoverNode,
-      currentNode
+      currentNode,
+      showEdges,
+      showRetainers
     }:AppProps) => {
   return hasFile
       ? <div className="App">
@@ -67,7 +75,13 @@ export const App = ({
 
         <div className="right-rail">
           {hoverNode ? <HoverNode node={hoverNode} /> : null}
-          {currentNode ? <CurrentNode node={currentNode} /> : null}
+          {
+          currentNode ?
+            <CurrentNode
+              node={currentNode}
+              showEdges={showEdges}
+              showRetainers={showRetainers}
+            /> : null}
         </div>
       </div>
       : <Redirect to="/" />;
@@ -92,5 +106,11 @@ export default connect(
       drawing,
       nodesLength
     };
+  },
+  dispatch => {
+    return {
+      showEdges: () => dispatch(showModal('edges')),
+      showRetainers: () => dispatch(showModal('retainers'))
+    }
   }
 )(App);

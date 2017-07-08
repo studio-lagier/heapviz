@@ -7,10 +7,14 @@ import { FSA } from '../../../typings/fsa';
 import { actions } from '../../services/file/state';
 import { Header } from '../Header';
 import { resetCache } from '../../services/canvasCache';
+import { actions as modalActions } from '../../services/modal/state';
+
 const { file: { fetchLocalFile } } = actions;
+const { modal: { showModal } } = modalActions;
 
 interface FileUploadWindowProps {
   onClick: (size: string) => FSA;
+  showHelp: () => FSA;
   fetching: boolean;
 }
 
@@ -20,7 +24,7 @@ export class FileUploadWindow extends React.Component<FileUploadWindowProps, {}>
   }
 
   render() {
-    const { onClick, fetching } = this.props;
+    const { onClick, showHelp, fetching } = this.props;
     return (
       <div className="page">
         <Header />
@@ -41,9 +45,10 @@ export class FileUploadWindow extends React.Component<FileUploadWindowProps, {}>
             {fetching ? "Loading profile!" : null}
             <div>
               <a onClick={() => onClick('small')}>(small)</a> |
-            <a onClick={() => onClick('medium')}>(medium)</a> |
-            <a onClick={() => onClick('large')}>(large)</a>
+              <a onClick={() => onClick('medium')}>(medium)</a> |
+              <a onClick={() => onClick('large')}>(large)</a>
             </div>
+            <button onClick={showHelp}>Show help</button>
           </div>
         </div>
       </div>
@@ -66,9 +71,8 @@ export default connect(
   ({ file: { fetching } }) => { return { fetching } },
   dispatch => {
     return {
-      onClick: size => {
-        dispatch(loadStaticFile(size))
-      }
+      onClick: size => dispatch(loadStaticFile(size)),
+      showHelp: () => dispatch(showModal('help'))
     }
   }
 )(FileUploadWindow);
