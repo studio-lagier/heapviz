@@ -30,8 +30,8 @@ function nodeToStats(node: Node):Stats {
 export const HoverNode = ({ node }: HoverNodeProps) => {
     const stats = nodeToStats(node);
     return (
-        <div className="HoverNode">
-            <strong>Hovered Node</strong>
+        <div className="HoverNode module">
+            <h3>Hovered Node</h3>
             <Stats stats={stats} />
         </div>
     )

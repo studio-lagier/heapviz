@@ -3,7 +3,7 @@
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-columns: 275px auto 275px;
+  grid-template-columns: 300px auto 300px;
 }
 
 .left-rail {
@@ -25,7 +25,22 @@
   z-index: 1;
 }
 
-h3 {
-  font-size: 1.5rem;
-  margin: 0 0 20px;
+.App {
+  & h3 {
+    font-size: 1.2rem;
+    margin: 0 0 8px;
+  }
+
+  & .module {
+    border-radius: 2px;
+    border:1px solid lightgrey;
+    padding: 20px;
+  }
+
+  & .btn {
+    background-color: rgb(37, 167, 28);
+    font-size: 0.8rem;
+    padding: 0 1rem;
+  }
 }
+

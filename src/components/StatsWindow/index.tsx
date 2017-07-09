@@ -8,13 +8,22 @@ interface StatsWindowProps {
     length: number;
 }
 
+function getSizes(totals:any) {
+    return Object.keys(totals).reduce((all:any, key) => {
+        all[key] = filesize(totals[key])
+        return all;
+    }, {})
+}
+
 export const StatsWindow = ({ stats, length }: StatsWindowProps) => {
-    const renderStats = stats.totals;
-    renderStats["Number of samples"] = stats.samples.length
-    renderStats["Number of nodes"] = length;
+    const renderStats = Object.assign({
+        ["Number of nodes"]: length,
+        ["Number of samples"]: stats.samples.length
+    }, getSizes(stats.totals));
+
     return (
-        <div className="StatsWindow">
-            <strong>Profile stats</strong>
+        <div className="StatsWindow module">
+            <h3>Profile stats</h3>
             <Stats stats={renderStats} />
         </div>
     )

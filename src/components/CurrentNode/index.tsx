@@ -32,19 +32,19 @@ function nodeToStats(node: Node): Stats {
 export const CurrentNode = ({ node, showEdges, showRetainers }: CurrentNodeProps) => {
     const stats = nodeToStats(node);
     return (
-        <div className="CurrentNode">
-            <strong>Selected Node</strong>
+        <div className="CurrentNode module">
+            <h3>Selected Node</h3>
             <div className="stats">
                 <Stats stats={stats} />
             </div>
             {
                 node.edges.length ?
-                    <button onClick={showEdges}>Edges</button> :
+                    <button className="btn waves-effect waves-light" onClick={showEdges}>Edges</button> :
                     null
             }
             {
                 node.retainers.length ?
-                    <button onClick={showRetainers}>Retainers</button> :
+                    <button className="btn waves-effect waves-light" onClick={showRetainers}>Retainers</button> :
                     null
             }
         </div>

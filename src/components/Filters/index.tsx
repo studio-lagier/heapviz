@@ -18,7 +18,7 @@ interface FiltersProps {
 
 export const Filters = ({ onChange, onClick, filters, nodeTypes }: FiltersProps) => {
     return (
-        <div className="Filters">
+        <div className="Filters module">
             <h3>Filters</h3>
             {Object.keys(filters).map(filter => filter === 'type' ?
                 (nodeTypes && <SelectFilter key="type" nodeTypes={nodeTypes} onChange={onChange('type')} value={filters.type}/>) :
