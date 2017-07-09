@@ -158,6 +158,11 @@ export class SampleSelector extends React.Component<SampleSelectorProps, SampleS
                 className="SampleSelector"
                 onMouseDown={e => this.onMouseDown(e)}
                 ref={hitbox => this.hitbox = hitbox}>
+                <div className="keys">
+                    <span className="title">Samples:</span>
+                    <span className="start">1</span>
+                    <span className="end">{samples.length}</span>
+                </div>
                 <div className="Selected" style={this.getSelectedStyle()}/>
                 <div className="Samples">
                     {samples.map((sample, i) =>

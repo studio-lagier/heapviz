@@ -5,13 +5,40 @@
     top: 0px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(0,0,0,0.4);
     cursor: pointer;
+    z-index: 2;
+
+    & .keys {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+
+        & span {
+            font-size: 0.8rem;
+        }
+
+        & .title {
+            left: -45px;
+            position: relative;
+        }
+
+        & .start {
+            position: relative;
+            left: -41px;
+        }
+
+        & .end {
+            position: absolute;
+            top: 2px;
+            right: 5px;
+        }
+    }
 }
 
 .Selected {
     height: 100%;
     position: absolute;
     bottom: 0;
-    background-color: red;
+    background-color:rgba(0,0,0,0.12);
 }

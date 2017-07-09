@@ -7,7 +7,7 @@ interface LoaderProps {
 }
 
 export const Loader = ({ visible, message }: LoaderProps) => (
-    <div className={`Loader ${visible ? 'visible' : null}`}>
+    <div className={`Loader ${visible ? 'visible' : ''}`}>
         <ul className="LoaderImage">
             <li></li>
             <li></li>
