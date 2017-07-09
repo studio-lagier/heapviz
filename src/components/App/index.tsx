@@ -10,6 +10,7 @@ import SampleSelector from "../SampleSelector";
 import HoverNode from "../HoverNode";
 import CurrentNode from "../CurrentNode";
 import Filters from "../Filters";
+import Loader from "../Loader";
 import { Redirect } from "react-router-dom";
 import { Node } from "../../services/worker/heap-profile-parser";
 import { FSA } from '../../../typings/fsa';
@@ -24,6 +25,7 @@ interface AppProps {
   drawing: boolean;
   stats: any;
   hasFile: boolean;
+  fetching: boolean;
   hoverNode: Node;
   currentNode: Node;
   nodesLength: number;
@@ -33,6 +35,7 @@ interface AppProps {
 
 export const App = ({
       hasFile,
+      fetching,
       showMessage,
       computing,
       drawing,
@@ -47,15 +50,10 @@ export const App = ({
   return hasFile
       ? <div className="App">
         {/*Dumb conditional here because of timing issues with very fast renders meaning we can get SHOW_MESSAGE's from our worker after our render has completed and triggered HIDE_MESSAGE*/}
-        <div
-          className={`message ${showMessage && (computing || drawing)
-            ? "visible"
-            : ""}`}
-        >
-          <div className="text">
-            {message}
-          </div>
-        </div>
+        <Loader
+          visible={showMessage && fetching || computing || drawing}
+          message={message}
+        />
 
         {stats && stats.samples.length > 1 ? <SampleSelector /> : null}
 
@@ -91,17 +89,18 @@ export default connect(
   ({
     samples: { stats },
     heap: { computing, hoverNode, currentNode, nodesLength },
-    file: { hasFile },
+    file: { hasFile, fetching },
     renderer: { drawing },
     messages: { showing: showMessage, message }
   }) => {
     return {
+      hasFile: fetching || hasFile,
+      fetching,
       message,
       hoverNode,
       currentNode,
       showMessage,
       stats,
-      hasFile,
       computing,
       drawing,
       nodesLength

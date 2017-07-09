@@ -64,11 +64,17 @@ export default function reducer(state = initialState, action: FSA) {
 //Action creators
 export const actions = createActions({
     file: {
-        FETCH_LOCAL_FILE: (p: string) => p,
+        FETCH_LOCAL_FILE: [
+            (p: string) => p,
+            (p: string) => {return {message: `Loading file ${p}`}}
+        ],
         FILE_LOADED: (p: ArrayBuffer) => p,
         DRAG_OVER: () => { },
         DRAG_OUT: () => { },
-        LOAD_FILE: (p:string) => p
+        LOAD_FILE: [
+            (p: string) => p,
+            (p: string) => {return {message: `Loading file ${p}`}}
+        ],
     }
 })
 
@@ -92,5 +98,5 @@ export const loadFile: Epic<FSA, any> =
 
 export const onFileLoaded: Epic<FSA, any> =
     action$ => action$
-        .ofType(FILE_LOADED)
+        .ofType(FETCH_LOCAL_FILE, LOAD_FILE)
         .map(() => push('/viz'));

@@ -1,0 +1,127 @@
+.Loader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.3s ease-out, z-index 0s 0.3s;
+    z-index: 0;
+
+    &.visible {
+        opacity: 1;
+        transition: opacity 0s ease-out, z-index 0s 0s;
+        z-index: 2;
+    }
+
+    & .text {
+        text-align: center;
+        width: 50%;
+        position: absolute;
+        top: calc(50% + 70px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    & ul {
+        position: absolute;
+        margin: auto;
+        padding: 0;
+        top: 0; left: 0; bottom: 0; right: 0;
+        width: 50px;
+        height: 50px;
+        list-style: none;
+    }
+
+    & li {
+        position: absolute;
+        margin: auto;
+        padding: 0;
+        top: 0; left: 0; bottom: 0; right: 0;
+        width: 0;
+        height: 0;
+        border-radius: 10px;
+        opacity: 0;
+    }
+
+    & li:nth-child(5n) {
+        background: rgb(37, 167, 28);
+    }
+
+    & li:nth-child(5n + 1) {
+        background: rgb(255, 197, 108);
+    }
+
+    & li:nth-child(5n + 2) {
+        background: rgb(158, 185, 228);
+    }
+
+    & li:nth-child(5n + 3) {
+        background: rgb(255, 106, 0);
+    }
+
+    & li:nth-child(5n + 4) {
+        background: rgb(24, 108, 188);
+    }
+
+    & li:nth-child(1) {
+        opacity: 1;
+        width: 30px;
+        height: 30px;
+        border-radius: 30px;
+    }
+
+    & li:nth-child(2) {
+    animation:         circleround2 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    }
+
+    & li:nth-child(3) {
+    animation:         circleround3 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.1s;
+    }
+
+    & li:nth-child(4) {
+    animation:         circleround4 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.2s;
+    }
+
+    & li:nth-child(5) {
+    animation:         circleround5 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.3s;
+    }
+
+    & li:nth-child(6) {
+    animation:         circleround6 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.4s;
+    }
+
+    & li:nth-child(7) {
+    animation:         circleround7 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.5s;
+    }
+
+    & li:nth-child(8) {
+    animation:         circleround8 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.6s;
+    }
+
+    & li:nth-child(9) {
+    animation:         circleround9 1.6s cubic-bezier(0.250, 0.100, 0.250, 1.000) infinite;
+    animation-delay:         0.7s;
+    }
+}
+
+@keyframes         circleround2 { 25%,75% { top: -100%; left: 0; width: 12px; height: 12px; opacity: 1;} }
+
+@keyframes         circleround3 { 25%,75% { top: -70%; left: 70%; width: 18px; height: 18px; opacity: 1;} }
+
+@keyframes         circleround4 { 25%,75% { top: 0; left: 100%; width: 15px; height: 15px; opacity: 1;} }
+
+@keyframes         circleround5 { 25%,75% { top: 70%; left: 70%; width: 20px; height: 20px; opacity: 1;} }
+
+@keyframes         circleround6 { 25%,75% { top: 100%; left: 0; width: 18px; height: 18px; opacity: 1;} }
+
+@keyframes         circleround7 { 25%,75% { top: 70%; left: -70%; width: 8px; height: 8px; opacity: 1;} }
+
+@keyframes         circleround8 { 25%,75% { top: 0; left: -100%; width: 16px; height: 16px; opacity: 1;} }
+
+@keyframes         circleround9 { 25%,75% { top:  -70%; left:  -70%; width: 13px; height: 13px; opacity: 1;} }
