@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import './ModalOutlet.pcss';
 import HelpModal from '../HelpModal';
 import StatsModal from '../StatsModal';
+import UnsupportedBrowserModal from '../UnsupportedBrowserModal';
 import { Node } from '../../services/worker/heap-profile-parser';
 import { actions } from '../../services/modal/state';
 
@@ -22,6 +23,8 @@ function getActiveModal(name: string, node: Node) {
             return <StatsModal title="Retainers" edges={node.retainers} />
         case 'edges':
             return <StatsModal title="Edges" edges={node.edges} />
+        case 'unsupported':
+            return <UnsupportedBrowserModal />
         default:
             return null;
     }
@@ -55,8 +58,8 @@ export class ModalOutlet extends React.Component<ModalOutletProps, {}> {
         const { active, name, currentNode, close } = this.props;
         return (
             <div className={`ModalOutlet ${active ? 'active' : ''}`} onClick={ev => this.maybeClose(ev)}>
+                <div className="close-x" onClick={close}>✕</div>
                 <div className='Modal'>
-                    <div className="close-x" onClick={close}>✕</div>
                     {getActiveModal(name, currentNode)}
                 </div>
             </div>
