@@ -21,6 +21,13 @@ interface NodeFilter {
     maxNodeId: number
 }
 
+interface SampleStats {
+    nodeCount: number;
+    totalSize: number;
+    startTime?: number;
+    endTime?: number;
+}
+
 export class HeapProfile {
     _node: RawNode
     _filter: NodeFilter
@@ -82,6 +89,10 @@ export class HeapProfile {
 
     //Associate a range of nodes with a particular sample to allow for easy segmentation
     createSamples() {
+        if (!this.snapshot._samples) {
+            return this.samples = [this.getSample(0, 0)];
+        }
+
         this.samples = this.snapshot._samples.timestamps.reduce((all: Array<any>, timestamp: number, idx: number, timestamps: Array<number>) => {
             if (idx === 0 || idx === timestamps.length - 1) return all;
             all.push(this.getSample(
@@ -98,6 +109,7 @@ export class HeapProfile {
         //Return a tree made of nodes that exist between startTime and endTime
         //Assumes find iterates in order
         const samples = this.snapshot._samples;
+        if (!samples) return this.nodes;
 
         //Special case startTime 0 to return all initially assigned ids
         const startId = start === 0 ? 0 : samples.lastAssignedIds[start];
@@ -127,13 +139,16 @@ export class HeapProfile {
         let lastTime = -1;
         return {
             samples: this.samples.map((sample, i) => {
-                const stats = {
+                const stats: SampleStats = {
                     nodeCount: sample.length,
-                    totalSize: sample.reduce((total, node) => total + node.selfSize, 0),
-                    startTime: lastTime + 1,
-                    endTime: this.snapshot._samples.timestamps[i]
+                    totalSize: sample.reduce((total, node) => total + node.selfSize, 0)
                 };
-                lastTime = stats.endTime;
+
+                if (this.snapshot._samples) {
+                    stats.endTime = this.snapshot._samples.timestamps[i];
+                    stats.startTime = lastTime + 1;
+                    lastTime = stats.endTime;
+                }
                 return stats
             }),
             totals: this.snapshot.getStatistics()

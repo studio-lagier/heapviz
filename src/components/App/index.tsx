@@ -57,7 +57,7 @@ export const App = ({
           </div>
         </div>
 
-        {stats ? <SampleSelector /> : null}
+        {stats && stats.samples.length > 1 ? <SampleSelector /> : null}
 
         <div className="left-rail">
           {!computing
