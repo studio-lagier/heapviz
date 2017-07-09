@@ -12,10 +12,12 @@ import filters from './services/filters/state';
 import samples from './services/samples/state';
 import canvasCache, { onApplyFilters } from './services/canvasCache/state';
 import modal from './services/modal/state';
+import tutorial from './services/tutorial/state';
+
 export const history = createHistory();
 const rootReducer = combineReducers({
     heap, file, renderer, messages, filters, samples,
-    canvasCache, modal,
+    canvasCache, modal, tutorial,
     router: routerReducer
 })
 

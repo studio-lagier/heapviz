@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import 'materialize-css/dist/css/materialize.css';
+import 'react-joyride/lib/react-joyride-compiled.css'
 import 'materialize-css/dist/js/materialize.js';
 import { Provider } from 'react-redux';
 import { store, history } from './store';

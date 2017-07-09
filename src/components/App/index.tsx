@@ -11,12 +11,16 @@ import HoverNode from "../HoverNode";
 import CurrentNode from "../CurrentNode";
 import Filters from "../Filters";
 import Loader from "../Loader";
+import Tutorial from "../Tutorial";
+import JoyrideOutlet from "../JoyrideOutlet";
 import { Redirect } from "react-router-dom";
 import { Node } from "../../services/worker/heap-profile-parser";
 import { FSA } from '../../../typings/fsa';
 import { actions } from '../../services/modal/state';
+import {actions as tutorialActions} from '../../services/tutorial/state';
 
 const { modal: { showModal } } = actions;
+const { tutorial: { startTutorial } } = tutorialActions;
 
 interface AppProps {
   message: string;
@@ -31,6 +35,7 @@ interface AppProps {
   nodesLength: number;
   showEdges: () => FSA;
   showRetainers: () => FSA;
+  start: () => FSA;
 }
 
 export const App = ({
@@ -45,7 +50,8 @@ export const App = ({
       hoverNode,
       currentNode,
       showEdges,
-      showRetainers
+      showRetainers,
+      start
     }:AppProps) => {
   return hasFile
       ? <div className="App">
@@ -80,7 +86,10 @@ export const App = ({
               showEdges={showEdges}
               showRetainers={showRetainers}
             /> : null}
+            <Tutorial start={start}/>
+            <h1 className="logo">HeapViz!</h1>
         </div>
+        <JoyrideOutlet />
       </div>
       : <Redirect to="/" />;
 }
@@ -109,7 +118,8 @@ export default connect(
   dispatch => {
     return {
       showEdges: () => dispatch(showModal('edges')),
-      showRetainers: () => dispatch(showModal('retainers'))
+      showRetainers: () => dispatch(showModal('retainers')),
+      start: () => dispatch(startTutorial())
     }
   }
 )(App);

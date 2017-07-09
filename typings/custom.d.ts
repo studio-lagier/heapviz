@@ -33,3 +33,8 @@ declare module 'react-table' {
   const content: any;
   export default content;
 }
+
+declare module 'react-joyride' {
+  const content: any;
+  export default content;
+}
