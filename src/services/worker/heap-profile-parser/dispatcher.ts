@@ -6,10 +6,10 @@ function toActionName(name: string): string {
 
 export class Dispatcher {
     _objects: Array<any>;
-    _global: Window;
+    _global: WorkerGlobalScope;
     _postMessage: Function;
 
-    constructor(globalObject: Window, postMessage: Function) {
+    constructor(globalObject: WorkerGlobalScope, postMessage: Function) {
         this._objects = [];
         this._global = globalObject;
         this._postMessage = postMessage;

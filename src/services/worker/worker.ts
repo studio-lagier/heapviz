@@ -26,7 +26,7 @@ import {
 import { FluxStandardAction } from '../../../typings/fsa';
 
 const { fromEvent } = Observable;
-const dispatcher = new Dispatcher(self, self.postMessage.bind(self));
+const dispatcher = new Dispatcher(self, postMessage.bind(self));
 let heapProfile: HeapProfile;
 const MAX_NODES = 10000000;
 

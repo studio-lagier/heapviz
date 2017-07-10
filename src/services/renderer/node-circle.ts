@@ -1,11 +1,10 @@
-import * as PIXI from 'pixi.js';
 import { Node } from '../worker/heap-profile-parser';
 import { circle, GLState, Circle } from './canvas';
 import { color, hexToColor, padHex, modifyColor } from './colors';
 
 function createHitColor(i: number, v: number) {
     const base = i.toString(16);
-    return padHex(base);
+    return padHex(base.split(''));
 }
 
 export function createHitCircle(node: Node, state: GLState) {

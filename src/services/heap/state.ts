@@ -113,7 +113,7 @@ export const fetchNode: Epic<FSA, any> =
                 .take(1);
         });
 
-export const transferProfile: Epic<FSA, any> =
+export const transferProfile: Epic<any, any> =
     action$ => action$
         .ofType(TRANSFER_PROFILE)
         .mergeMap(action => {

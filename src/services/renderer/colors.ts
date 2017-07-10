@@ -2,8 +2,8 @@ import { schemeCategory20 as scheme, scaleOrdinal as scale } from 'd3-scale';
 
 let _colorGenerator: (type: string) => number[];
 
-export function padHex(base: string) {
-    const hex = Array.from("000000");
+export function padHex(base: string[]) {
+    const hex = "000000".split('');
     hex.splice(-base.length, base.length, ...base);
     return hex.join('');
 }

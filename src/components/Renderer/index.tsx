@@ -38,7 +38,7 @@ export class Renderer extends React.Component<RendererProps, {}> {
     const debouncedResize = debounce(() => {
       this.props.onResize(getSize(container));
     }, 200, { trailing: true });
-    this.listener = event => debouncedResize();
+    this.listener = (event:Event) => debouncedResize();
     window.addEventListener("resize", this.listener);
     this.props.initialSize(getSize(container));
   }

@@ -4,15 +4,14 @@
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
-        "target": "es2017",
-        "jsx": "react",
-        "allowJs": true,
+        "target": "ES5",
         "lib":[
-            "webworker",
             "dom",
             "webworker",
             "es2017"
-        ]
+        ],
+        "jsx": "react",
+        "allowJs": true
     },
     "include": [
         "./src/**/*",

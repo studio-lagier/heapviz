@@ -134,6 +134,9 @@ module.exports = {
         include: paths.appSrc,
         exclude: [/pack-circles/],
         loader: 'awesome-typescript-loader',
+        query: {
+          configFileName: 'tsconfig.prod.json'
+        }
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -178,14 +181,6 @@ module.exports = {
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [
-      autoprefixer({
-        browsers: [
-          '>1%',
-          'last 4 versions',
-          'Firefox ESR',
-          'not ie < 9', // React doesn't support IE8 anyway
-        ]
-      }),
       require('postcss-cssnext')
     ];
   },
