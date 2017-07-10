@@ -29,6 +29,7 @@
     "glslify-loader": "^1.0.2",
     "graceful-fs": "^4.1.11",
     "history": "^4.6.1",
+    "jq": "^1.7.2",
     "lodash": "^4.17.4",
     "lodash.debounce": "^4.0.8",
     "materialize-css": "^0.98.2",
@@ -129,5 +130,6 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  }
+  },
+  "hostPort": 8084
 }
