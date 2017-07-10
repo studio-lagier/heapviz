@@ -65,7 +65,7 @@ module.exports = {
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     // We inferred the "public path" (such as / or /my-project) from homepage.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -78,14 +78,14 @@ module.exports = {
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
-    extensions: ['.js', '.json', '.jsx', ''],
+    extensions: ['.ts', '.tsx','.js', '.json', '.jsx', ''],
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web'
     }
   },
-  
+
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
@@ -108,10 +108,13 @@ module.exports = {
       {
         exclude: [
           /\.html$/,
-          /\.(js|jsx)$/,
+          /\.(js|jsx)(\?.*)?$/,
+          /\.pcss$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg$/,
+          /\.(ts|tsx)(\?.*)?$/,
+          /\.(frag|vert)$/
         ],
         loader: 'url',
         query: {
@@ -124,7 +127,13 @@ module.exports = {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: 'babel',
-        
+        exclude: [/pack-circles/],
+      },
+      {
+        test: /\.(ts|tsx)(\?.*)?$/,
+        include: paths.appSrc,
+        exclude: [/pack-circles/],
+        loader: 'awesome-typescript-loader',
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -139,7 +148,7 @@ module.exports = {
       // use the "style" loader inside the async code so CSS from them won't be
       // in the main CSS file.
       {
-        test: /\.css$/,
+        test: /\.(css|pcss)$/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css?importLoaders=1!postcss',
@@ -165,7 +174,7 @@ module.exports = {
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
   },
-  
+
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [
@@ -177,6 +186,7 @@ module.exports = {
           'not ie < 9', // React doesn't support IE8 anyway
         ]
       }),
+      require('postcss-cssnext')
     ];
   },
   plugins: [
