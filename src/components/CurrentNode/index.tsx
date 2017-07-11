@@ -16,9 +16,10 @@ interface Stats {
 }
 
 function nodeToStats(node: Node): Stats {
-    const { id, edgesCount, className, name, selfSize, retainedSize, retainersCount, distance } = node;
+    const { id, edgesCount, className, name, selfSize, retainedSize, retainersCount, distance, type } = node;
     return {
         id,
+        type,
         edgesCount,
         retainersCount,
         selfSize: filesize(selfSize),

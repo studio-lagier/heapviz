@@ -8,7 +8,6 @@
         "jsx": "react",
         "allowJs": true,
         "lib":[
-            "webworker",
             "dom",
             "webworker",
             "es2017"
