@@ -2,10 +2,10 @@ import { colorToHex } from './colors';
 import { hitCircleMap, canvasState } from '../canvasCache';
 import { intersects } from './node-circle';
 
-const colorBuff = new Uint8Array(3);
+const colorBuff = new Uint8Array(4);
 
 function isMatch(color: Uint8Array | Uint8ClampedArray, x: number, y: number, cacheKey: string) {
-    let node = hitCircleMap[cacheKey][colorToHex(color)];
+    let node = hitCircleMap[cacheKey][colorToHex(color, true)];
     if (node) return intersects(node, x, y) && node;
 }
 
@@ -30,7 +30,7 @@ function getCircleFromColor(color: Uint8Array | Uint8ClampedArray, x: number, y:
 
 function _pickCircle(x: number, y: number, cacheKey: string) {
     const { hitCanvas: { gl } } = canvasState;
-    const color = gl.readPixels(x, gl.drawingBufferHeight - y, 1, 1, gl.RGB, gl.UNSIGNED_BYTE, colorBuff);
+    gl.readPixels(x, gl.drawingBufferHeight - y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, colorBuff);
     return getCircleFromColor(colorBuff, x, y, cacheKey);
 }
 

@@ -19,7 +19,8 @@ export function hexToColor(hex: string) {
     return digits;
 }
 
-export function colorToHex(color:any) {
+export function colorToHex(color: any, rgb = false) {
+    if (rgb && color.length > 3) color = color.slice(0, 3);
     let hex = "";
     color.forEach((el:number) => {
         let elString = el.toString(16);
