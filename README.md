@@ -1,6 +1,8 @@
+![HeapViz preview image](heapviz-full.jpg)
+
 HeapViz is a Chrome heap profile visualization tool. It helps to diagnose memory leaks, memory allocation issues, and large in-memory objects.
 
-You can find a hosted version at heapviz.com.
+You can find a hosted version at [heapviz.com](https://heapviz.com).
 
 ## Usage
 
@@ -59,13 +61,13 @@ PR's welcome, I'd love to work with people to turn this into a really useful too
 
 ## To-Do
 
-[ ] Travis build
-[ ] Circle-pack improvements
-[ ] Rendering improvements
-[ ] Move parsing, layout, and rendering to separate packages
-[ ] Clean up - there are a few extra files and dependencies that need to be purged
-[ ] Write some tests
-[ ] Find more intuitive ways to filter to more easily expose problem objects
+* [ ] Travis build
+* [ ] Circle-pack improvements
+* [ ] Rendering improvements
+* [ ] Move parsing, layout, and rendering to separate packages
+* [ ] Clean up - there are a few extra files and dependencies that need to be purged
+* [ ] Write some tests
+* [ ] Find more intuitive ways to filter to more easily expose problem objects
 
 ## Donation
 

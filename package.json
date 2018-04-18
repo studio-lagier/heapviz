@@ -1,7 +1,7 @@
 {
   "name": "heap-profile-visualizer-react",
   "version": "0.1.0",
-  "private": true,
+  "license": "Apache",
   "dependencies": {
     "@types/d3-scale": "^1.0.10",
     "@types/filesize": "^3.2.15",
